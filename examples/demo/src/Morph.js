@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { easing, keyframes, tween, css } from "popmotion";
+import { spring, easing, value, keyframes, tween, css } from "popmotion";
 
 const { createExpoIn } = easing;
 const strongerEaseIn = createExpoIn(5);
@@ -58,52 +58,88 @@ class Morph extends Component {
 		}
 	});
 
-	from = (key, type) => ({
+	from = (key, options) => ({
 		ref: element => {
 			element.style.willChange = "transform";
-			this.elementFrom[key] = { element, type };
+			this.elementFrom[key] = { element, options };
 		}
 	});
 
-	to = (key, type) => ({
+	to = (key, options) => ({
 		ref: element => {
 			element.style.visibility = "hidden";
 			element.style.opacity = 0;
 			element.style.willChange = "transform";
-			this.elementTo[key] = { element, type };
+			this.elementTo[key] = { element, options };
 		}
 	});
 
+	isPlaying = false;
+	timeline = [];
+
 	hiddenProps = () => {};
-	play = index => {
-		const duration = 600 * index;
+
+	progress = value(0, this.seek);
+
+	go = (to, options = {}) => {
+		spring({
+			from: this.progress.get(),
+			to,
+			stiffness: 500,
+			mass: 1,
+			damping: 25,
+			...options
+		}).start(x => {
+			this.progress.update(x);
+			this.seek(x);
+		});
+	};
+
+	seek = t => {
+		this.timeline.forEach(x => x.seek(t));
+	};
+
+	init = index => {
+		if (this.timeline.length) return this.go(1);
+
+		const duration = 1000 * index;
 		Object.keys(this.elementFrom).forEach(key => {
-			const { element: original } = this.elementFrom[key];
+			const { element: original, options } = this.elementFrom[key];
 			const { element: target } = this.elementTo[key];
 
 			const originalRect = original.getBoundingClientRect();
 			const targetRect = target.getBoundingClientRect();
-			const clone = document.createElement("div");
-			const originalClone = original.cloneNode(false);
+			const originalCloneContainer = document.createElement("div");
+			const originalClone = original.cloneNode(true);
 
-			clone.appendChild(originalClone);
+			originalCloneContainer.appendChild(originalClone);
 
 			const originalStyler = css(original);
-			const cloneStyler = css(clone);
+			console.log("original: ", original);
+			const cloneStyler = css(originalCloneContainer);
 			const targetStyler = css(target);
 
 			cloneStyler.set({
 				position: "absolute",
-				"transform-origin": "top left",
+				transformOrigin: "top left",
+				pointerEvents: "none",
 				top: originalRect.top,
 				left: originalRect.left,
 				width: originalRect.width,
-				height: originalRect.height
+				height: originalRect.height,
+				...options
 			});
 
-			document.body.appendChild(clone);
+			document.body.appendChild(originalCloneContainer);
 
-			originalStyler.set(hiddenStyle);
+			const hide = styler => t =>
+				styler.set({ opacity: t, visibility: t ? "visible" : "hidden" });
+
+			const hiddenTransition = keyframes({
+				values: [1, 0],
+				times: [0, 0.1],
+				easings: easing.linear
+			});
 
 			const diffStyle = diffRect(targetRect, originalRect);
 
@@ -112,15 +148,13 @@ class Morph extends Component {
 					{ translateX: 0, translateY: 0, scaleX: 1, scaleY: 1 },
 					diffStyle
 				],
-				duration,
-				easings: [easing.easeInOut]
+				easings: easing.linear
 			});
 
 			const fadeOut = keyframes({
 				values: [{ opacity: 1 }, { opacity: 0 }],
-				duration: duration / 2,
-				easings: [easing.linear],
-				times: [0.8, 0.9]
+				easings: easing.linear,
+				times: [0.9, 1]
 			});
 
 			targetStyler.set({
@@ -128,65 +162,95 @@ class Morph extends Component {
 				visibility: "visible"
 			});
 
-			// const translateFrom = keyframes({
-			// 	values: [
-				// 		{ ...diffRect(originalRect, targetRect) },
-			// 		{ translateX: 0, translateY: 0, scaleX: 1, scaleY: 1}
-			// 	],
-			// 	duration,
-			// 	easings: [easing.easeInOut]
-			// });
+			const diffTargetStyles = diffRect(originalRect, targetRect);
+
+			const translateFrom = keyframes({
+				values: [
+					{ ...diffTargetStyles },
+					{ translateX: 0, translateY: 0, scaleX: 1, scaleY: 1 }
+				],
+				easings: easing.linear
+			});
 
 			const fadeIn = keyframes({
 				values: [{ opacity: 0 }, { opacity: 1 }],
-				duration: duration / 2,
-				easings: [easing.linear],
-				// times: [0.8, 1]
+				easings: easing.linear
+				// times: [0.9, 1]
 			});
 
-			// Clone.
-			translateIn.start(cloneStyler.set);
-
-			const fadeInOnce = onceDifferent((s) => {
-				console.log('s: ', s);
-				fadeIn.start(targetStyler.set);
-				fadeOut.start(cloneStyler.set);
-			});
+			// const fadeInOnce = onceDifferent(s => {
+			// 	console.log("s: ", s);
+			// 	fadeIn.start(targetStyler.set);
+			// });
+			// fadeOut.start(cloneStyler.set);
 
 			// Image bg fix.
-			tween({
-				from: diffStyle.scaleX,
-				to: 1,
-				easings: [easing.easeInOut],
-				duration
-			}).start(s => {
-				originalClone.style.backgroundSize = `${s * 100}% 100%`;
-				if (s === 1) return fadeInOnce(s);
-			});
+			const bgFix = tween({
+				from: diffTargetStyles.scaleX * 1000,
+				to: 100,
+				easings: easing.linear
+			})
+				.start(s => {
+					// if (key === 'cover') console.log('s: ', s);
+					originalClone.style.backgroundSize = `${s}% 100%`;
+				})
+				.pause();
 
-			// Target.
-			// translateFrom.start(targetStyler.set);
+			// tween({
+			// 	from: diffTargetStyles.scaleY * 1000,
+			// 	to: 100,
+			// 	easings: easing.linear,
+			// 	duration
+			// }).start(s => {
+			// 	target.style.backgroundSize = `100% ${s}% `;
+			// });
+
+			this.timeline.push(
+				...[
+					hiddenTransition.start(hide(originalStyler)).pause(),
+					// original.
+					translateIn.start(cloneStyler.set).pause(),
+					fadeOut.start(cloneStyler.set).pause(),
+					// Target.
+					fadeIn.start(targetStyler.set).pause(),
+					translateFrom.start(targetStyler.set).pause(),
+					bgFix
+				]
+			);
+
+			this.isPlaying = true;
 		});
 
-		this.fadeOutElements.map(({ element, options = {} }) => {
+		const fadeOuts = this.fadeOutElements.map(({ element, options = {} }) =>
 			tween({
 				from: 1,
 				to: 0,
-				ease: easing.easeOut,
-				duration,
+				ease: easing.linear,
+				duration: duration / 2,
 				...options
-			}).start(v => (element.style.opacity = v));
-		});
+			}).start(v => (element.style.opacity = v))
+		);
 
-		this.fadeInElements.map(({ element, options = {} }) => {
-			tween({
-				from: 0,
-				to: 1,
-				ease: easing.easeIn,
-				duration,
-				...options
-			}).start(v => (element.style.opacity = v));
-		});
+		const fadeIns = this.fadeInElements.map(({ element, options = {} }) =>
+			keyframes({
+				values: [0, 1],
+				easings: easing.strongerEaseIn,
+				times: [0.8, 0.9]
+			})
+				.start(v => (element.style.opacity = v))
+				.pause()
+		);
+
+		this.timeline = [...fadeOuts, ...fadeIns, ...this.timeline];
+
+		// const timelineTween = tween({
+		// 	from: 0,
+		// 	to: 1,
+		// 	ease: easing.cubicBezier(0.8, 0, 0.34, 1),
+		// 	duration
+		// }).start(this.progress);
+
+		this.go(1);
 	};
 
 	render() {
@@ -197,8 +261,12 @@ class Morph extends Component {
 			fadeIn: this.fadeIn,
 			fadeOut: this.fadeOut,
 
+			back: this.back,
+			seek: this.seek,
+			go: this.go,
+
 			hiddenProps: this.hiddenProps,
-			play: this.play
+			init: this.init
 		});
 
 		return renderedChildren && React.Children.only(renderedChildren);
@@ -206,4 +274,3 @@ class Morph extends Component {
 }
 
 export default Morph;
-
