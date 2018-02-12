@@ -19,21 +19,17 @@ import ReactMorph from "react-morph";
 
 const Component = () => (
   <ReactMorph>
-    {({ from, to, fadeIn, fadeOut, go, init }) => (
+    {({ from, to, fadeIn, go, init }) => (
       <div>
-        <a onClick={() => init(1)} {...from("title")}>
+        <a {...from("title")} onClick={() => init(1)}>
           <strong>Zurich</strong>
         </a>
-        <p {...from("description")}>Panorama Grossmünster limmat river</p>
 
-        <div>
-          <h1 {...to("title")}>Zurich</h1>
-          <h2 {...to("description")}>Panorama Grossmünster limmat river</h2>
+        <h1 {...to("title")}>Zurich</h1>
 
-          <a onClick={() => go(0)} href="#/back" {...fadeIn()}>
-            Back
-          </a>
-        </div>
+        <a {...fadeIn()} onClick={() => go(0)}>
+          Back
+        </a>
       </div>
     )}
   </ReactMorph>
