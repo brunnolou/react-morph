@@ -247,13 +247,6 @@ class Morph extends Component {
 
     this.timeline = [...fadeOuts, ...fadeIns, ...this.timeline];
 
-    // const timelineTween = tween({
-    // 	from: 0,
-    // 	to: 1,
-    // 	ease: easing.cubicBezier(0.8, 0, 0.34, 1),
-    // 	duration
-    // }).start(this.progress);
-
     this.go(1);
   };
 
