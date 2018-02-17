@@ -23,7 +23,14 @@
   },
   "homepage": "https://github.com/brunnolou/react-morph#readme",
   "dependencies": {
-    "wobble": "^1.5.0"
+    "eslint-plugin-flowtype": "^2.44.0",
+    "keyframe": "^2.1.0",
+    "popmotion": "^8.1.10",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0"
+  },
+  "peerDependencies": {
+    "react": "^16.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
