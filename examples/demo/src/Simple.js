@@ -9,21 +9,22 @@ const Simple = () => (
 			}
 			a {
 				display: block;
+				color: inherit;
 			}
 		`}</style>
     <ReactMorph>
       {({ from, to, fadeIn, go }) => (
         <div>
           <a href="#" onClick={() => go(1)}>
-            <strong {...from("title")}>Zurich</strong>
+            <strong {...from("title")}>🐛 <br />ReactMorph</strong>
             <br />
-            <p {...from("description")}>Panorama Grossmünster limmat river</p>
+            <p {...from("description")}>Morphing transitions was never so easy!</p>
           </a>
 
           <div>
-            <h1 {...to("title")}>Zurich</h1>
+            <h1 {...to("title")}>🦋<br />ReactMorph</h1>
             <br />
-            <h2 {...to("description")}>Panorama Grossmünster limmat river</h2>
+            <h2 {...to("description")}>Morphing transitions was never so easy!</h2>
 
             <a href="#" onClick={() => go(0)} {...fadeIn()}>
               Back

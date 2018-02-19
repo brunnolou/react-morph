@@ -1,9 +1,11 @@
-# React morph
+# React Morph ️🦋
+
+#### Morphing Ui transitions made simple
 
 [![npm version](https://badge.fury.io/js/react-morph.svg?v0)](https://www.npmjs.com/package/react-morph)
 ![size](http://img.badgesize.io/brunnolou/react-morph/master/lib/all.min.js?compression=gzip&label=gzip+size&v)
 
-## Usage
+## Usage 🐛
 
 ```sh
 npm install react-morph
@@ -28,15 +30,15 @@ import ReactMorph from "react-morph";
   {({ from, to, fadeIn, go }) => (
     <div>
       <a onClick={() => go(1)}>
-        <strong {...from("title")}>Zurich</strong>
+        <strong {...from("title")}>ReactMorph 🐛</strong>
         <br />
-        <p {...from("description")}>Panorama Grossmünster limmat river</p>
+        <p {...from("description")}>Morphing transitions was never so easy!</p>
       </a>
 
       <div>
-        <h1 {...to("title")}>Zurich</h1>
+        <h1 {...to("title")}>ReactMorph 🦋</h1>
         <br />
-        <h2 {...to("description")}>Panorama Grossmünster limmat river</h2>
+        <h2 {...to("description")}>Morphing transitions was never so easy!</h2>
 
         <a onClick={() => go(0)} {...fadeIn()}>
           Back
@@ -47,7 +49,7 @@ import ReactMorph from "react-morph";
 </ReactMorph>
 ```
 
-## Features
+## Features 🌟
 
 * Simplicity
 * No hardcoded absolute positions
