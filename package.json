@@ -1,6 +1,6 @@
 {
   "name": "react-morph",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Ui transitions made simple",
   "main": "lib/index.js",
   "scripts": {
@@ -20,8 +20,8 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/brunnolou/react-morph/issues"
-	},
-	"homepage": "https://brunnolou.github.io/react-morph",
+  },
+  "homepage": "https://brunnolou.github.io/react-morph",
   "dependencies": {
     "eslint-plugin-flowtype": "^2.44.0",
     "keyframe": "^2.1.0",
