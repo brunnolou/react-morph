@@ -1,6 +1,6 @@
 {
   "name": "react-morph",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Ui transitions made simple",
   "main": "lib/index.js",
   "scripts": {
