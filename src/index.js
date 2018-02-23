@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import keyframe from 'keyframe';
+import raf from 'raf';
 import {
   css,
   easing,
@@ -12,17 +13,24 @@ import {
 } from 'popmotion';
 import { interpolateObject } from './util';
 
-const { createExpoIn } = easing;
 const { pipe } = transform;
-const strongerEaseIn = createExpoIn(50);
 
 const getBox = elm => {
   const box = elm.getBoundingClientRect();
+  const styles = getComputedStyle(elm);
+
   return {
-    top: box.top + window.scrollY,
-    left: box.left + window.scrollX,
-    width: box.width,
-    height: box.height,
+    top: box.top - window.scrollY - parseInt(styles.marginTop, 10),
+    left: box.left - window.scrollX - parseInt(styles.marginLeft, 10),
+    width:
+      box.width +
+      window.scrollX +
+      parseInt(styles.marginLeft, 10) +
+      parseInt(styles.marginRight, 10),
+    height:
+      box.height +
+      parseInt(styles.marginTop, 10) +
+      parseInt(styles.marginBottom, 10),
   };
 };
 
@@ -33,8 +41,9 @@ const fadeOutTween = ({ element, options = {} }) =>
     ease: easing.linear,
     ...options,
   }).start(v => {
-    element.style.opacity = v;
-    if (v === 1) element.style.pointerEvents = 'all';
+    const node = element;
+    node.style.opacity = v;
+    if (v === 1) node.style.pointerEvents = 'all';
   });
 
 const fadeInTween = ({ element, options = {} }) =>
@@ -46,16 +55,19 @@ const fadeInTween = ({ element, options = {} }) =>
   })
     .start(style => {
       const styler = css(element);
+      const node = element;
 
       styler.set(style);
 
-      if (style.opacity === 1) element.style.pointerEvents = 'all';
+      if (style.opacity === 1) node.style.pointerEvents = 'all';
     })
     .pause();
 
-const hideTween = ({ element, options = {} }) => ({
+const hideTween = ({ element }) => ({
   seek: pipe(Math.round, t => {
-    element.style.visibility = t > 0 ? 'hidden' : 'visible';
+    const node = element;
+
+    node.style.visibility = t > 0 ? 'hidden' : 'visible';
   }),
 });
 
@@ -74,24 +86,41 @@ const diffRect = (a, b) => ({
 
 class Morph extends Component {
   static propTypes = {
+    // eslint-disable-next-line
+    portalElement: propTypes.object,
     children: propTypes.func.isRequired,
     spring: propTypes.shape({
+      restDelta: 0.001,
+      restSpeed: 0.001,
       stiffness: propTypes.number.isRequired,
-      mass: propTypes.number.isRequired,
+      mass: propTypes.number,
       damping: propTypes.number.isRequired,
     }),
   };
 
   static defaultProps = {
+    portalElement: document && document.body,
     spring: {
-      stiffness: 500,
-      mass: 5,
-      damping: 300,
+      damping: 26,
+      mass: 1,
+      stiffness: 170,
     },
   };
 
+  state = {
+    state: 'from',
+  };
+
+  componentWillUnmount() {
+    this.elementsCloned.forEach(elm => {
+      this.props.portalElement.removeChild(elm);
+    });
+  }
+
   elementFrom = {};
   elementTo = {};
+
+  elementsCloned = [];
 
   hideElements = [];
   fadeInElements = [];
@@ -101,8 +130,8 @@ class Morph extends Component {
   timeline = [];
 
   hide = options => ({
-    ref: elm => {
-      const element = elm;
+    ref: node => {
+      const element = node;
       this.hideElements.push({ element, options });
     },
   });
@@ -110,8 +139,10 @@ class Morph extends Component {
   progress = value(0, this.seek);
 
   fadeIn = options => ({
-    ref: elm => {
-      const element = elm;
+    ref: node => {
+      const element = node;
+      if (!element) return;
+
       element.style.willChange = 'opacity';
       element.style.pointerEvents = 'none';
       element.style.opacity = 0;
@@ -120,24 +151,30 @@ class Morph extends Component {
   });
 
   fadeOut = options => ({
-    ref: elm => {
-      const element = elm;
+    ref: node => {
+      const element = node;
+      if (!element) return;
+
       element.style.willChange = 'opacity';
       this.fadeOutElements.push({ element, options });
     },
   });
 
   from = (key, options) => ({
-    ref: elm => {
-      const element = elm;
+    ref: node => {
+      const element = node;
+      if (!element || this.elementFrom[key]) return;
+
       element.style.willChange = 'transform';
       this.elementFrom[key] = { element, options };
     },
   });
 
   to = (key, options) => ({
-    ref: elm => {
-      const element = elm;
+    ref: node => {
+      const element = node;
+      if (!element || this.elementTo[key]) return;
+
       element.style.visibility = 'hidden';
       element.style.opacity = 0;
       element.style.willChange = 'transform';
@@ -163,6 +200,10 @@ class Morph extends Component {
   };
 
   seek = t => {
+    if (t === 1 || t === 0) {
+      this.setState({ state: t ? 'to' : 'from' });
+    }
+
     this.timeline.forEach(x => x.seek(t));
   };
 
@@ -185,15 +226,12 @@ class Morph extends Component {
     const cloneStyler = css(originalCloneContainer);
     const targetStyler = css(target);
 
-    // originalStyler.set({ color: 'red' });
-    // cloneStyler.set({ color: 'green' });
-    // targetStyler.set({ color: 'blue' });
-
     cloneStyler.set({
       position: 'absolute',
       transformOrigin: 'top left',
       pointerEvents: 'none',
       ...originalRect,
+      ...options,
       zIndex,
     });
     targetStyler.set({
@@ -201,7 +239,8 @@ class Morph extends Component {
       visibility: 'visible',
     });
 
-    document.body.appendChild(originalCloneContainer);
+    this.props.portalElement.appendChild(originalCloneContainer);
+    this.elementsCloned = [...this.elementsCloned, originalCloneContainer];
 
     const diffStyle = diffRect(targetRect, originalRect);
 
@@ -222,12 +261,10 @@ class Morph extends Component {
       // In and out track.
       {
         seek: keyframe({
-          0.1: t => {
+          0.01: t => {
             hide(originalStyler)(1 - t);
           },
-
           30: () => {},
-
           100: t => {
             hide(cloneStyler)(1 - t);
           },
@@ -242,7 +279,7 @@ class Morph extends Component {
           },
         }),
       },
-      // Half way.
+      // Half way track.
       {
         seek: keyframe({
           0.01: t => {
@@ -256,7 +293,7 @@ class Morph extends Component {
     this.isPlaying = true;
   };
 
-  init = () => {
+  init = to => {
     if (this.timeline.length) return;
 
     Object.keys(this.elementFrom).forEach(this.morph);
@@ -267,7 +304,7 @@ class Morph extends Component {
 
     this.timeline = [...fadeOuts, ...fadeIns, ...hidesIns, ...this.timeline];
 
-    this.go(1);
+    raf(() => this.go(to));
   };
 
   render() {
@@ -283,6 +320,7 @@ class Morph extends Component {
       go: this.go,
 
       progress: this.progress,
+      state: this.state.state,
 
       hide: this.hide,
       init: this.init,
