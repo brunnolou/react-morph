@@ -15,22 +15,27 @@ import { interpolateObject } from './util';
 
 const { pipe } = transform;
 
-const getBox = elm => {
+const getBox = (elm, { margin = false } = {}) => {
   const box = elm.getBoundingClientRect();
   const styles = getComputedStyle(elm);
 
   return {
-    top: box.top - window.scrollY - parseInt(styles.marginTop, 10),
-    left: box.left - window.scrollX - parseInt(styles.marginLeft, 10),
+    top:
+      box.top - window.scrollY - (margin ? parseInt(styles.marginTop, 10) : 0),
+    left:
+      box.left -
+      window.scrollX -
+      (margin ? parseInt(styles.marginLeft, 10) : 0),
     width:
       box.width +
-      window.scrollX +
-      parseInt(styles.marginLeft, 10) +
-      parseInt(styles.marginRight, 10),
+      (margin
+        ? parseInt(styles.marginLeft, 10) + parseInt(styles.marginRight, 10)
+        : 0),
     height:
       box.height +
-      parseInt(styles.marginTop, 10) +
-      parseInt(styles.marginBottom, 10),
+      (margin
+        ? parseInt(styles.marginTop, 10) + parseInt(styles.marginBottom, 10)
+        : 0),
   };
 };
 
@@ -112,9 +117,8 @@ class Morph extends Component {
   };
 
   componentWillUnmount() {
-    this.elementsCloned.forEach(elm => {
-      this.props.portalElement.removeChild(elm);
-    });
+    // Remove clones.
+    this.elementsCloned.forEach(node => this.props.portalElement.removeChild(node));
   }
 
   elementFrom = {};
@@ -215,7 +219,7 @@ class Morph extends Component {
     } = this.elementFrom[key];
     const { element: target } = this.elementTo[key];
 
-    const originalRect = getBox(original);
+    const originalRect = getBox(original, { margin: true });
     const targetRect = getBox(target);
     const originalCloneContainer = document.createElement('div');
     const originalClone = original.cloneNode(true);
