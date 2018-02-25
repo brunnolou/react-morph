@@ -92,6 +92,7 @@ class App extends Component {
                         alt={username}
                         {...from("user-" + username, {
                           zIndex: 3,
+                          getMargins: false,
                           easing: easeIn
                         })}
                       />
