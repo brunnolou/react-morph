@@ -64,3 +64,8 @@ Sometimes:
 * It's necessary to create a placeholder element for the transition to avoid child distortion.
 * We need extra layers instead of nested children.
 * List items could be miss calculated, a simple solution is: `list-style: none;`.
+
+## TODO
+> **Warning** wip
+- [ ] Recalculate positions on window resize
+- [ ] ? Optional portal for the second state ?
