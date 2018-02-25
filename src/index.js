@@ -15,25 +15,27 @@ import { interpolateObject } from './util';
 
 const { pipe } = transform;
 
-const getBox = (elm, { margin = false } = {}) => {
+const getBox = (elm, { getMargins = false } = {}) => {
   const box = elm.getBoundingClientRect();
   const styles = getComputedStyle(elm);
 
   return {
     top:
-      box.top - window.scrollY - (margin ? parseInt(styles.marginTop, 10) : 0),
+      box.top +
+      window.scrollY -
+      (getMargins ? parseInt(styles.marginTop, 10) : 0),
     left:
-      box.left -
+      box.left +
       window.scrollX -
-      (margin ? parseInt(styles.marginLeft, 10) : 0),
+      (getMargins ? parseInt(styles.marginLeft, 10) : 0),
     width:
       box.width +
-      (margin
+      (getMargins
         ? parseInt(styles.marginLeft, 10) + parseInt(styles.marginRight, 10)
         : 0),
     height:
       box.height +
-      (margin
+      (getMargins
         ? parseInt(styles.marginTop, 10) + parseInt(styles.marginBottom, 10)
         : 0),
   };
@@ -118,7 +120,9 @@ class Morph extends Component {
 
   componentWillUnmount() {
     // Remove clones.
-    this.elementsCloned.forEach(node => this.props.portalElement.removeChild(node));
+    this.elementsCloned.forEach(node =>
+      this.props.portalElement.removeChild(node),
+    );
   }
 
   elementFrom = {};
@@ -215,12 +219,17 @@ class Morph extends Component {
   morph = key => {
     const {
       element: original,
-      options: { zIndex, easing: optEasing = x => x, ...options } = {},
+      options: {
+        zIndex,
+        getMargins = true,
+        easing: optEasing = x => x,
+        ...options
+      } = {},
     } = this.elementFrom[key];
     const { element: target } = this.elementTo[key];
 
-    const originalRect = getBox(original, { margin: true });
-    const targetRect = getBox(target);
+    const originalRect = getBox(original, { getMargins });
+    const targetRect = getBox(target, { getMargins });
     const originalCloneContainer = document.createElement('div');
     const originalClone = original.cloneNode(true);
 
