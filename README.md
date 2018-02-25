@@ -17,8 +17,8 @@ yarn add react-morph
 
 1. Create two states as you normally do (HTML + CSS).
 2. Wrap both with `<ReactMorph>`
-3. Label the elements you wanna morph with `from("any-key")` and `to("any-key")`
-4. Perform the magic with `go(0...1)`
+3. Label the elements you wanna morph with `from("a-key")` and `to("a-key")`
+4. Perform the magic with `go(0)` or `go(1)`
 
 ```js
 import React from "react";
@@ -58,12 +58,14 @@ import ReactMorph from "react-morph";
 
 ## Take in mind
 
-Sometimes:
+Caveats:
 
-* You need `display: inline-block` to remove extra white spaces, to match the real element's width.
-* It's necessary to create a placeholder element for the transition to avoid child distortion.
-* We need extra layers instead of nested children.
+* You need to remove extra white spaces, to match the real element's width, the solutions is `display: inline-block` or a wrapping element to the content.
+* Margins it's always tricky because create extra white space, you could either wrap the content in another element and animate it or be sure to match both state margins.
+* Sometimes it's necessary to create a placeholder element for the transition to avoid child distortion.
 * List items could be miss calculated, a simple solution is: `list-style: none;`.
+* Sometimes you need extra layers instead of nested children.
+* Avoid animating both parent and children to avoid unpredicted results.
 
 ## TODO
 > **Warning** wip
