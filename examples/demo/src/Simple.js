@@ -11,6 +11,10 @@ const Simple = () => (
 				display: block;
 				color: inherit;
 			}
+			.bigger {
+				font-size: 20px;
+				color: #0b9fcb;
+			}
 		`}</style>
     <ReactMorph>
       {({ from, to, fadeIn, go, init, state }) => (
@@ -28,7 +32,9 @@ const Simple = () => (
               🦋<br />ReactMorph
             </h1>
             <br />
-            <h2 {...to("description")}>Morphing was never so easy!</h2>
+            <p class="bigger" {...to("description")}>
+              Morphing was never so easy!
+            </p>
 
             <a onClick={() => go(0)} {...fadeIn()}>
               Back
