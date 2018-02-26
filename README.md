@@ -16,7 +16,7 @@ yarn add react-morph
 ## Simple Example
 
 1. Create two states as you normally do (HTML + CSS).
-2. Wrap both with `<ReactMorph>`
+2. Wrap both in one `<ReactMorph>`
 3. Label the elements you wanna morph with `from("a-key")` and `to("a-key")`
 4. Perform the magic with `go(0)` or `go(1)`
 
