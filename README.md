@@ -1,6 +1,6 @@
 # React Morph ️🦋
 
-#### Morphing Ui transitions made simple
+#### Morphing UI transitions made simple
 
 [![npm version](https://badge.fury.io/js/react-morph.svg?v0)](https://www.npmjs.com/package/react-morph)
 ![size](http://img.badgesize.io/brunnolou/react-morph/master/lib/all.min.js?compression=gzip&label=gzip+size&v)
@@ -15,7 +15,7 @@ yarn add react-morph
 
 ## Simple Example
 
-1. Create two states as you normally do (HTML + CSS).
+1. Create two states as you normally would (HTML + CSS).
 2. Wrap both in one `<ReactMorph>`
 3. Label the elements you wanna morph with `from("a-key")` and `to("a-key")`
 4. Perform the magic with `go(0)` or `go(1)`
@@ -54,18 +54,18 @@ import ReactMorph from "react-morph";
 * Simplicity
 * No hardcoded absolute positions
 * All GPU accelerated props
-* No Layout or Paint browser rendering
+* No layout or paint browser rendering
 
-## Take in mind
+## Keep in mind
 
 Caveats:
 
-* You need to remove extra white spaces, to match the real element's width, the solutions is `display: inline-block` or a wrapping element to the content.
-* Margins it's always tricky because create extra white space, you could either wrap the content in another element and animate it or be sure to match both state margins.
+* You need to remove extra whitespace, to match the real element's width, the solution is `display: inline-block` or a wrapping element to the content.
+* Margins are always tricky because they create extra white space. You can either wrap the content in another element and animate it or be sure to match both the margins in both states.
 * Sometimes it's necessary to create a placeholder element for the transition to avoid child distortion.
-* List items could be miss calculated, a simple solution is: `list-style: none;`.
+* List items could be miscalculated; a simple solution is: `list-style: none;`.
 * Sometimes you need extra layers instead of nested children.
-* Avoid animating both parent and children to avoid unpredicted results.
+* Avoid animating both the parent and children to avoid unpredicted results.
 
 ## TODO
 > **Warning** wip
