@@ -151,6 +151,7 @@ p {
   width: 100%;
   padding: 1rem;
   z-index: 3;
+  box-sizing: border-box;
 }
 
 .details-content-placeholder {
