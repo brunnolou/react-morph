@@ -103,7 +103,7 @@ class Morph extends Component {
   };
 
   static defaultProps = {
-    portalElement: document && document.body,
+    portalElement: global.document && global.document.body,
     spring: {
       damping: 26,
       mass: 1,
