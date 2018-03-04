@@ -27,7 +27,8 @@
     "popmotion": "^8.1.10",
     "prop-types": "^15.6.0",
     "raf": "^3.4.0",
-    "react": "^16.2.0"
+    "react": "^16.2.0",
+    "stylefire": "^1.1.9"
   },
   "peerDependencies": {},
   "devDependencies": {
