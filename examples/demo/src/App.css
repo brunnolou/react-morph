@@ -98,7 +98,7 @@ p {
   justify-content: space-between;
   width: 100%;
   max-width: 19rem;
-  height: 10rem;
+  height: 12rem;
   margin: -4rem 1rem 1rem;
   padding: 1rem;
   font-size: 14px;
@@ -221,8 +221,8 @@ p {
 }
 
 .l-flex {
-	display: flex;
-	justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .text-container {
