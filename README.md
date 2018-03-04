@@ -67,7 +67,23 @@ Caveats:
 * Sometimes you need extra layers instead of nested children.
 * Avoid animating both the parent and children to avoid unpredicted results.
 
+## Demos
+
+[Live Demo](https://brunnolou.github.io/react-morph/?down=0)
+
+### Sandbox
+
+
+* Morphing from card to details:
+
+  [![Edit 96x66mr6w](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/96x66mr6w)
+
+* Simple text:
+
+  [![Edit j2rjln010w](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/j2rjln010w)
 ## TODO
+
 > **Warning** wip
-- [ ] Recalculate positions on window resize
-- [ ] ? Optional portal for the second state ?
+* [ ] Add a `styled-components` example
+* [ ] Recalculate positions on window resize
+* [ ] ? Optional portal for the second state ?
