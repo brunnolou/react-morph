@@ -3,15 +3,13 @@ import propTypes from 'prop-types';
 import keyframe from 'keyframe';
 import raf from 'raf';
 import css from 'stylefire/css';
-import easing from 'popmotion/easing';
+import { linear } from 'popmotion/easing';
 import keyframes from 'popmotion/animations/keyframes';
 import spring from 'popmotion/animations/spring';
 import tween from 'popmotion/animations/tween';
 import value from 'popmotion/reactions/value';
-import transform from 'popmotion/transformers';
+import { pipe } from 'popmotion/transformers';
 import { interpolateObject } from './util';
-
-const { pipe } = transform;
 
 const getBox = (elm, { getMargins = false } = {}) => {
   const box = elm.getBoundingClientRect();
@@ -43,7 +41,7 @@ const fadeOutTween = ({ element, options = {} }) =>
   tween({
     from: 1,
     to: 0,
-    ease: easing.linear,
+    ease: linear,
     ...options,
   }).start(v => {
     const node = element;
@@ -55,7 +53,7 @@ const fadeInTween = ({ element, options = {} }) => {
   const styler = css(element);
   return keyframes({
     values: [{ opacity: 0 }, { opacity: 1 }],
-    easings: easing.linear,
+    easings: linear,
     times: [0.8, 1],
     ...options,
   })
