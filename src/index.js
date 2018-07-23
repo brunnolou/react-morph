@@ -3,12 +3,12 @@ import propTypes from 'prop-types';
 import keyframe from 'keyframe';
 import raf from 'raf';
 import css from 'stylefire/css';
-import { linear } from 'popmotion/easing';
-import keyframes from 'popmotion/animations/keyframes';
-import spring from 'popmotion/animations/spring';
-import tween from 'popmotion/animations/tween';
-import value from 'popmotion/reactions/value';
-import { pipe } from 'popmotion/transformers';
+import { linear } from 'popmotion/lib/easing';
+import keyframes from 'popmotion/lib/animations/keyframes';
+import spring from 'popmotion/lib/animations/spring';
+import tween from 'popmotion/lib/animations/tween';
+import value from 'popmotion/lib/reactions/value';
+import { pipe } from 'popmotion/lib/transformers';
 import { interpolateObject } from './util';
 
 const getBox = (elm, { getMargins = false } = {}) => {
@@ -94,8 +94,8 @@ class Morph extends Component {
     portalElement: propTypes.object,
     children: propTypes.func.isRequired,
     spring: propTypes.shape({
-      restDelta: 0.001,
-      restSpeed: 0.001,
+      restDelta: propTypes.number,
+      restSpeed: propTypes.number,
       stiffness: propTypes.number.isRequired,
       mass: propTypes.number,
       damping: propTypes.number.isRequired,
@@ -105,6 +105,8 @@ class Morph extends Component {
   static defaultProps = {
     portalElement: global.document && global.document.body,
     spring: {
+      restDelta: 0.001,
+      restSpeed: 0.001,
       damping: 26,
       mass: 1,
       stiffness: 170,

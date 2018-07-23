@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import ReactMorph from "./lib";
 import "./App.css";
 import { easing } from "popmotion";
-import Simple from "./Simple";
 
 const { createExpoIn, easeIn } = easing;
 
