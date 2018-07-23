@@ -105,7 +105,7 @@ class App extends Component {
               <div
                 className="details-image"
                 style={{ backgroundImage: 'url("./zurich.jpg")' }}
-                role="picture"
+                role="img"
                 alt="Zurich landscape"
                 {...to("cover")}
               />
