@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import ReactMorph from "./lib";
 import "./App.css";
 import { easing } from "popmotion";
-import Simple from "./Simple";
 
 const { createExpoIn, easeIn } = easing;
 
@@ -106,7 +105,7 @@ class App extends Component {
               <div
                 className="details-image"
                 style={{ backgroundImage: 'url("./zurich.jpg")' }}
-                role="picture"
+                role="img"
                 alt="Zurich landscape"
                 {...to("cover")}
               />
