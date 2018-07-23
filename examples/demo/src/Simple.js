@@ -32,7 +32,7 @@ const Simple = () => (
               🦋<br />ReactMorph
             </h1>
             <br />
-            <p class="bigger" {...to("description")}>
+            <p className="bigger" {...to("description")}>
               Morphing was never so easy!
             </p>
 
