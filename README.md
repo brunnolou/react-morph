@@ -5,6 +5,8 @@
 [![npm version](https://badge.fury.io/js/react-morph.svg?v0)](https://www.npmjs.com/package/react-morph)
 ![size](http://img.badgesize.io/brunnolou/react-morph/master/lib/all.min.js?compression=gzip&label=gzip+size&v)
 
+![Preview Gif](https://github.com/brunnolou/react-morph/blob/master/examples/react-morph.gif)
+
 ## Usage 🐛
 
 ```sh
