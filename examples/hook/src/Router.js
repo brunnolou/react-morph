@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import useMorph from "./useMorph";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
@@ -7,13 +6,13 @@ import "./App.css";
 const spring = {
   damping: 26,
   mass: 1,
-  stiffness: 70
+  stiffness: 170
 };
 
 const Item = ({ morph }) => (
   <div key="from" className="container" {...morph.morphContainer()}>
-    {/* <div className="avatar" {...morph.morphFocus()} /> */}
-    {/* <p {...morph.morphFade()}>Hello Morph hook!</p> */}
+    <div className="avatar" {...morph.morphFocus()} />
+    <p {...morph.morphFade()}>Hello Morph hook!</p>
   </div>
 );
 
@@ -24,18 +23,18 @@ const Details = ({ morph }) => {
       className="container container--lg"
       {...morph.morphContainer()}
     >
-      {/* <div className="avatar" {...morph.morphFocus()} /> */}
-      {/* <h1 key="fade-to" {...morph.morphFade()}>
+      <div className="avatar" {...morph.morphFocus()} />
+      <h1 key="fade-to" {...morph.morphFade()}>
         Hello Morph hook!
-      </h1> */}
+      </h1>
     </div>
   );
 };
 
 function App() {
   const morphContainer = useMorph({ spring });
-  const morphFade = useMorph({ type: "fade", spring });
-  const morphFocus = useMorph({ spring });
+  const morphFade = useMorph({ spring, zIndex: 2 });
+  const morphFocus = useMorph({ spring, zIndex: 3 });
 
   const morph = {
     morphContainer,
@@ -46,15 +45,6 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Route exact path="/" render={() => <Item morph={morph} />} />
-        <Route
-          exact
-          path="/details/"
-          render={() => <Details morph={morph} />}
-        />
-
-        <br />
-
         <nav>
           <ul>
             <li>
@@ -65,6 +55,15 @@ function App() {
             </li>
           </ul>
         </nav>
+
+        <Route exact path="/" render={() => <Item morph={morph} />} />
+        <Route
+          exact
+          path="/details/"
+          render={() => <Details morph={morph} />}
+        />
+
+        <br />
       </div>
     </Router>
   );

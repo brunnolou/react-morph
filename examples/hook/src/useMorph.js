@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useReducer } from "react";
 
 import morphTransition from "./morphTransition";
 import { getRect } from "./utils";
@@ -14,33 +14,31 @@ const defaultsOptions = {
   }
 };
 
-// const STATES_MAXINE = {
-//   initialState: "INIT",
-//   states: {
-//     // Hide to
-//     // Save previous
-//     INIT: "GET_RECTS"
-//   }
-// };
+const initialState = { count: 0 };
+
+function reducer(state, { type, id, value }) {
+  switch (type) {
+    case "SET":
+      return { [id]: value };
+    default:
+      return state;
+  }
+}
 
 export default function useMorph(opts = defaultsOptions) {
   const options = { ...defaultsOptions, ...opts };
-  const ref = useRef();
-  let to = ref.current;
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const setRefs = (id, ...refs) => dispatch({ type: "SET", ...refs });
 
   const prevToRef = useRef();
-  const from = prevToRef.current;
-
-  const rectFrom = from && getRect(from, { getMargins: options.getMargins });
-
-  let isAnimating = false;
+  const preFromRect = useRef();
   const prevSpring = useRef();
 
-  useEffect(() => {
-    prevToRef.current = to;
-	});
+  let isAnimating = false;
+  let cleanup;
 
-  useEffect(() => {
+  const animate = ({ from, to, rectFrom, rectTo }) => {
     if (!to) {
       console.warn("Morph created without any mounted element!");
       return;
@@ -49,11 +47,8 @@ export default function useMorph(opts = defaultsOptions) {
     to.style.visibility = "visible";
 
     if (!from) return;
-    if (isAnimating) return;
+    // if (isAnimating) return;
     isAnimating = true;
-
-    const rectTo = getRect(to, { getMargins: options.getMargins });
-    let cleanup;
 
     switch (options.type) {
       case "fade":
@@ -70,7 +65,10 @@ export default function useMorph(opts = defaultsOptions) {
               ? 1 - prevSpring.current.currentValue
               : 0,
           initialVelocity:
-            prevSpring.current && prevSpring.current.currentVelocity,
+            prevSpring.current !== undefined &&
+            prevSpring.current.currentVelocity !== 0
+              ? prevSpring.current.currentVelocity * -1
+              : 0,
           onUpdate(s) {
             prevSpring.current = s;
           },
@@ -81,18 +79,28 @@ export default function useMorph(opts = defaultsOptions) {
     return () => {
       if (isAnimating) cleanup();
     };
-  });
-
-  const getRef = node => {
-    console.log("node: ", node);
-
-    if (!node) return;
-    to = node;
   };
 
-  const props = (p = {}) => ({
-    ...p,
-    ref: getRef,
+  const getRef = instance => node => {
+    if (!node) {
+      // Cleanup maybe.
+      if (cleanup) cleanup();
+      return;
+    }
+    const to = node;
+    const from = prevToRef.current;
+
+    const rectFrom = preFromRect.current;
+    const rectTo = getRect(to, { getMargins: options.getMargins });
+
+    animate({ from, rectFrom, to, rectTo });
+
+    prevToRef.current = to;
+    preFromRect.current = rectTo;
+  };
+
+  const props = instance => ({
+    ref: getRef(instance),
     style: { visibility: "hidden" },
     "data-rm": true,
     ...(options.onClick ? { onClick: options.onClick } : {})

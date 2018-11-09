@@ -6,8 +6,8 @@ import {
   applyOverlayStyle,
   diffRect,
   getTransformString,
-  hideInnerMorph,
-  cloneElement
+  cloneElement,
+  lerp
 } from "./utils";
 
 const resetTranslate = {
@@ -50,8 +50,8 @@ export default function({
   const fromDiffStyle = diffRect(rectFrom, rectTo);
   const toDiffStyle = diffRect(rectTo, rectFrom);
 
-  const toContainer = cloneElement(to, options.portalElement);
-  const fromContainer = cloneElement(from, options.portalElement);
+  const fromContainer = cloneElement(from, options);
+  const toContainer = cloneElement(to, options);
 
   // hideInnerMorph(toContainer);
   // hideInnerMorph(fromContainer);
@@ -65,8 +65,8 @@ export default function({
   const toFLIP = interpolateObject(fromDiffStyle, resetTranslate);
   const fromFLIP = interpolateObject(resetTranslate, toDiffStyle);
 
-  const toFade = interpolateObject({ opacity: 0 }, { opacity: 1 });
-  const fromFade = interpolateObject({ opacity: 1 }, { opacity: 0 });
+  const toFade = lerp(0, 1, true);
+  const fromFade = lerp(1, 0, true);
 
   let isDeleted = false;
 
@@ -79,16 +79,16 @@ export default function({
         case "fade":
           // toContainer.style.color = "red";
           // fromContainer.style.color = "green";
-          toContainer.style.opacity = toFade(easeFast(p)).opacity;
-          fromContainer.style.opacity = fromFade(easeSlow(p)).opacity;
+          toContainer.style.opacity = toFade(easeFast(p));
+          fromContainer.style.opacity = fromFade(easeSlow(p));
           toContainer.style.transform = getTransformString(toFLIP(p));
           fromContainer.style.transform = getTransformString(fromFLIP(p));
 
           break;
         case "morph":
         default:
-          toContainer.style.opacity = toFade(ease(p)).opacity;
-          fromContainer.style.opacity = fromFade(ease(p)).opacity;
+          toContainer.style.opacity = toFade(ease(p));
+          fromContainer.style.opacity = fromFade(ease(p));
           toContainer.style.transform = getTransformString(toFLIP(p));
           fromContainer.style.transform = getTransformString(fromFLIP(p));
       }

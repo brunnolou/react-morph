@@ -10,7 +10,6 @@ export const applyOverlayStyle = (node, styles, transforms) => {
     position: "absolute",
     //visibility: "visible",
     "transform-origin": "top left",
-    zIndex: 99,
     ...styles
     //background: "rgba(255,255,0,.4)"
   });
@@ -82,21 +81,20 @@ export const interpolateObject = (from = {}, to = {}) => t => ({
   )
 });
 
-export const cloneElement = (element, portalElement) => {
+export const cloneElement = (element, { portalElement, zIndex = 0 }) => {
   const cloneContainer = document.createElement("div");
-	const clone = element.cloneNode(true);
+  const clone = element.cloneNode(true);
 
-	cloneContainer.classList.add('rm-cloned');
-	cloneContainer.style.pointerEvents = "none";
+  cloneContainer.classList.add("rm-cloned");
+  // cloneContainer.style.pointerEvents = "none";
+  cloneContainer.style.zIndex = 1 + zIndex;
   cloneContainer.appendChild(clone);
   portalElement.appendChild(cloneContainer);
 
   return cloneContainer;
 };
 
-export const hideInnerMorph = parent => {
-  Array.from(parent.querySelectorAll(".rm-fade")).map(el => {
-    console.log("el: ", el);
-    // el.style.visibility = "hidden";
-  });
-};
+export const clamp = (min, max) => x => Math.min(Math.max(x, min), max);
+export const clampProgress = clamp(0, 1);
+export const lerp = (from, to, isClamped) => t =>
+  getValueFromProgress(from, to, isClamped ? clampProgress(t) : t);
