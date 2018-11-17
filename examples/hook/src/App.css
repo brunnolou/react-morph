@@ -19,8 +19,8 @@ body {
 }
 
 a {
-	text-decoration: none;
-	color: currentColor;
+  text-decoration: none;
+  color: currentColor;
 }
 
 .from,
@@ -70,20 +70,23 @@ a {
   background: #800;
   width: 50px;
   height: 50px;
-	border-radius: 100px;
-	margin-right: 1rem;
+  border-radius: 100px;
+  margin-right: 1rem;
 }
 
 .container {
-	display: flex;
-	flex-direction: row;
+	will-change: transform;
+  display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   background-color: #fff;
   padding: 1rem;
+	box-shadow: 0 0 10px #f00;
+	margin-bottom: 1rem;
 }
 
 .container--lg {
-	padding: 10rem 2rem;
+  padding: 10rem 2rem;
   min-width: 30vw;
 }

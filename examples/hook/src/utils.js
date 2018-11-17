@@ -98,3 +98,6 @@ export const clamp = (min, max) => x => Math.min(Math.max(x, min), max);
 export const clampProgress = clamp(0, 1);
 export const lerp = (from, to, isClamped) => t =>
   getValueFromProgress(from, to, isClamped ? clampProgress(t) : t);
+
+export const constPowerEase =
+n => x => Math.cos((Math.PI / 4) * (Math.pow(2 * x - 1, 2 * n + 1) + 1));

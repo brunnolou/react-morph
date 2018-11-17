@@ -1,11 +1,11 @@
-import { useRef, useReducer } from "react";
+import { useRef, useCallback, useReducer, useEffect } from "react";
 
 import morphTransition from "./morphTransition";
 import { getRect } from "./utils";
 
 const defaultsOptions = {
   portalElement: document.body,
-  getMargins: true,
+  getMargins: false,
   type: "morph",
   spring: {
     damping: 26,
@@ -14,12 +14,14 @@ const defaultsOptions = {
   }
 };
 
-const initialState = { count: 0 };
+const initialState = {};
 
 function reducer(state, { type, id, value }) {
   switch (type) {
     case "SET":
-      return { [id]: value };
+      return { ...state, [id]: { ...(state[id] || {}), ...value } };
+    case "RESET":
+      return { [id]: { ...(state[id] || {}), ...value } };
     default:
       return state;
   }
@@ -28,17 +30,16 @@ function reducer(state, { type, id, value }) {
 export default function useMorph(opts = defaultsOptions) {
   const options = { ...defaultsOptions, ...opts };
 
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const setRefs = (id, ...refs) => dispatch({ type: "SET", ...refs });
+  const [refs, dispatch] = useReducer(reducer, initialState);
+  const setRefs = (id, value) => dispatch({ type: "SET", id, value });
 
-  const prevToRef = useRef();
-  const preFromRect = useRef();
-  const prevSpring = useRef();
+  // const prevToRef = useRef();
+  // const preFromRect = useRef();
 
   let isAnimating = false;
   let cleanup;
 
-  const animate = ({ from, to, rectFrom, rectTo }) => {
+  const animate = ({ id, from, to, rectFrom, rectTo }) => {
     if (!to) {
       console.warn("Morph created without any mounted element!");
       return;
@@ -50,6 +51,9 @@ export default function useMorph(opts = defaultsOptions) {
     // if (isAnimating) return;
     isAnimating = true;
 
+    const { prevSpring } = refs[id] || {};
+    // console.log("refs[id]: ", refs[id]);
+
     switch (options.type) {
       case "fade":
       case "morph":
@@ -60,49 +64,75 @@ export default function useMorph(opts = defaultsOptions) {
           rectFrom,
           rectTo,
           fromValue:
-            prevSpring.current !== undefined &&
-            prevSpring.current.currentValue !== 1
-              ? 1 - prevSpring.current.currentValue
+            prevSpring !== undefined && prevSpring.currentValue !== 1
+              ? 1 - prevSpring.currentValue
               : 0,
           initialVelocity:
-            prevSpring.current !== undefined &&
-            prevSpring.current.currentVelocity !== 0
-              ? prevSpring.current.currentVelocity * -1
+            prevSpring !== undefined && prevSpring.currentVelocity !== 0
+              ? prevSpring.currentVelocity * -1
               : 0,
           onUpdate(s) {
-            prevSpring.current = s;
+            setRefs(id, { prevSpring: s });
           },
           options
         });
+
+        setRefs(id, { cleanupFrom: cleanup });
     }
 
     return () => {
       if (isAnimating) cleanup();
     };
+	};
+
+
+
+	useEffect(() => {
+		console.log('oi')
+	}, [])
+
+  const getRef = (id = "__MORPH__") => {
+		return useCallback(
+			node => {
+				console.log("id: ", id, node);
+        const { from, rectFrom, cleanupFrom } = refs[id] || {};
+
+        if (cleanupFrom) cleanupFrom();
+        if (!node) {
+          if (cleanup) cleanup();
+          return;
+        }
+        const to = node;
+
+        const rectTo = getRect(to, { getMargins: options.getMargins });
+
+        // console.log("to: ", to);
+        // console.log("refs[id]: ", refs);
+
+        animate({ id, from, rectFrom, to, rectTo });
+
+        const morphElement = {
+          from: to,
+          rectFrom: rectTo,
+          cleanupFrom: cleanup
+        };
+
+        if (to && from && node) {
+          dispatch({ type: "RESET", id, value: morphElement });
+          // console.log("RESET: ", id, from);
+        } else {
+          setRefs(id, morphElement);
+          // console.log('SET: ', id, from);
+        }
+      },
+      [id]
+    );
   };
 
-  const getRef = instance => node => {
-    if (!node) {
-      // Cleanup maybe.
-      if (cleanup) cleanup();
-      return;
-    }
-    const to = node;
-    const from = prevToRef.current;
-
-    const rectFrom = preFromRect.current;
-    const rectTo = getRect(to, { getMargins: options.getMargins });
-
-    animate({ from, rectFrom, to, rectTo });
-
-    prevToRef.current = to;
-    preFromRect.current = rectTo;
-  };
-
-  const props = instance => ({
-    ref: getRef(instance),
+  const props = id => ({
+    ref: getRef(id),
     style: { visibility: "hidden" },
-    "data-rm": true,
+    "data-rm": id,
     ...(options.onClick ? { onClick: options.onClick } : {})
   });
 

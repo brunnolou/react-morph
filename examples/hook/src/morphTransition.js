@@ -1,5 +1,5 @@
 import { Spring } from "wobble";
-import { clamp, cubicBezier, interpolate } from "@popmotion/popcorn";
+import { clamp, cubicBezier, interpolate, reversed } from "@popmotion/popcorn";
 
 import {
   interpolateObject,
@@ -7,7 +7,8 @@ import {
   diffRect,
   getTransformString,
   cloneElement,
-  lerp
+  lerp,
+  constPowerEase
 } from "./utils";
 
 const resetTranslate = {
@@ -17,7 +18,8 @@ const resetTranslate = {
   scaleY: 1
 };
 
-const ease = cubicBezier(0.5, 0.5, 0, 1);
+const ease = cubicBezier(.9,.9,.37,.98);
+const easeRev = reversed(ease);
 const easeInOut = cubicBezier(0.5, 0.5, 0, 1);
 
 const fadeDistance = 0.1;
@@ -88,7 +90,7 @@ export default function({
         case "morph":
         default:
           toContainer.style.opacity = toFade(ease(p));
-          fromContainer.style.opacity = fromFade(ease(p));
+          fromContainer.style.opacity = fromFade(easeRev(p));
           toContainer.style.transform = getTransformString(toFLIP(p));
           fromContainer.style.transform = getTransformString(fromFLIP(p));
       }
