@@ -1,4 +1,4 @@
-import { useRef, useCallback, useReducer, useEffect } from "react";
+import { useRef, useCallback, useReducer } from "react";
 
 import morphTransition from "./morphTransition";
 import { getRect } from "./utils";
@@ -20,8 +20,8 @@ function reducer(state, { type, id, value }) {
   switch (type) {
     case "SET":
       return { ...state, [id]: { ...(state[id] || {}), ...value } };
-    case "RESET":
-      return { [id]: { ...(state[id] || {}), ...value } };
+    case "RESET_OTHERS":
+      return { [id]: state[id] };
     default:
       return state;
   }
@@ -52,7 +52,6 @@ export default function useMorph(opts = defaultsOptions) {
     isAnimating = true;
 
     const { prevSpring } = refs[id] || {};
-    // console.log("refs[id]: ", refs[id]);
 
     switch (options.type) {
       case "fade":
@@ -83,50 +82,36 @@ export default function useMorph(opts = defaultsOptions) {
     return () => {
       if (isAnimating) cleanup();
     };
-	};
-
-
-
-	useEffect(() => {
-		console.log('oi')
-	}, [])
+  };
 
   const getRef = (id = "__MORPH__") => {
-		return useCallback(
-			node => {
-				console.log("id: ", id, node);
-        const { from, rectFrom, cleanupFrom } = refs[id] || {};
+    return useCallback(node => {
+      const { cleanupFrom } = refs[id] || {};
+      const willAnimate = !!node && !!refs[id];
+      console.log("id: ", id, !!node);
 
-        if (cleanupFrom) cleanupFrom();
-        if (!node) {
-          if (cleanup) cleanup();
-          return;
-        }
-        const to = node;
+      if (cleanupFrom) cleanupFrom();
+      if (!node) {
+        if (cleanup) cleanup();
+        if (!willAnimate) dispatch({ type: "RESET_OTHERS", id });
+        return;
+      }
 
-        const rectTo = getRect(to, { getMargins: options.getMargins });
+      const { from, rectFrom } = refs[id] || {};
+      const to = node;
 
-        // console.log("to: ", to);
-        // console.log("refs[id]: ", refs);
+      const rectTo = getRect(to, { getMargins: options.getMargins });
 
-        animate({ id, from, rectFrom, to, rectTo });
+      animate({ id, from, rectFrom, to, rectTo });
 
-        const morphElement = {
-          from: to,
-          rectFrom: rectTo,
-          cleanupFrom: cleanup
-        };
+      const morphElement = {
+        from: to,
+        rectFrom: rectTo,
+        cleanupFrom: cleanup
+      };
 
-        if (to && from && node) {
-          dispatch({ type: "RESET", id, value: morphElement });
-          // console.log("RESET: ", id, from);
-        } else {
-          setRefs(id, morphElement);
-          // console.log('SET: ', id, from);
-        }
-      },
-      [id]
-    );
+      setRefs(id, morphElement);
+    }, []);
   };
 
   const props = id => ({

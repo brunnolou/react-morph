@@ -11,8 +11,8 @@ const spring = {
 
 const Item = ({ morph, name, id }) => (
   <div key="from" className="container" {...morph.morphContainer(id)}>
-    {/* <div className="avatar" {...morph.morphFocus(id)} />
-    <p {...morph.morphFade(id)}>{name}</p> */}
+    <div className="avatar" {...morph.morphFocus(id)} />
+    <p {...morph.morphFade(id)}>{name}</p>
   </div>
 );
 
@@ -23,20 +23,22 @@ const Details = ({ morph, data: { name, id } }) => {
       className="container container--lg"
       {...morph.morphContainer(id)}
     >
-      {/* <div className="avatar" {...morph.morphFocus(id)} />
+      <div className="avatar" {...morph.morphFocus(id)} />
       <h1 key="fade-to" {...morph.morphFade(id)}>
         {name}
-      </h1> */}
+      </h1>
     </div>
   );
 };
 
 function App() {
+  const morphPage = useMorph({ spring });
   const morphContainer = useMorph({ spring });
   const morphFade = useMorph({ spring, zIndex: 2 });
   const morphFocus = useMorph({ spring, zIndex: 3 });
 
   const morph = {
+		morphPage,
     morphContainer,
     morphFade,
     morphFocus
@@ -52,11 +54,15 @@ function App() {
     <Router>
       <div className="App">
         <Route
-          exact
+					exact
           path="/"
-          render={() => (
+          render={({
+            match: {
+              params: { id }
+            }
+          }) => (
             <div>
-              {items.map(i => (
+              {items.filter(i => 1).map(i => (
                 <Link to={"/details/" + i.id} key={i.id}>
                   <Item morph={morph} {...i} />
                 </Link>
