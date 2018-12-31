@@ -1,4 +1,10 @@
-import { useRef, useCallback, useReducer } from "react";
+import {
+  useRef,
+  useCallback,
+  useReducer,
+  useLayoutEffect,
+  useEffect
+} from "react";
 
 import morphTransition from "./morphTransition";
 import { getRect } from "./utils";
@@ -114,12 +120,21 @@ export default function useMorph(opts = defaultsOptions) {
     }, []);
   };
 
-  const props = id => ({
-    ref: getRef(id),
+  // const ref = useRef();
+  // const idRef = useRef();
+  // const cache = {};
+
+  // useLayoutEffect(() => {
+  //   const to = ref.current;
+  //   console.log("to: ", cache);
+  // }, []);
+
+  const props = {
+    ref: getRef(),
     style: { visibility: "hidden" },
-    "data-rm": id,
-    ...(options.onClick ? { onClick: options.onClick } : {})
-  });
+    // "data-rm": id,
+    // ...(options.onClick ? { onClick: options.onClick } : {})
+  };
 
   return props;
 }

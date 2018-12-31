@@ -8,7 +8,7 @@ import {
   getTransformString,
   cloneElement,
   lerp,
-  constPowerEase
+  // constPowerEase
 } from "./utils";
 
 const resetTranslate = {
