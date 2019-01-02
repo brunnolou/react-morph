@@ -1,9 +1,9 @@
 import {
   useRef,
   useCallback,
-  useReducer,
-  useLayoutEffect,
-  useEffect
+  useReducer
+  // useLayoutEffect,
+  // useEffect
 } from "react";
 
 import morphTransition from "./morphTransition";
@@ -39,13 +39,15 @@ export default function useMorph(opts = defaultsOptions) {
   const [refs, dispatch] = useReducer(reducer, initialState);
   const setRefs = (id, value) => dispatch({ type: "SET", id, value });
 
-  // const prevToRef = useRef();
-  // const preFromRect = useRef();
+  const prevToRef = useRef();
+  const preToRectRef = useRef();
+  const prevSpringRef = useRef();
+  const cleanupFromRef = useRef();
 
   let isAnimating = false;
   let cleanup;
 
-  const animate = ({ id, from, to, rectFrom, rectTo }) => {
+  const animate = ({ from, to, rectFrom, rectTo }) => {
     if (!to) {
       console.warn("Morph created without any mounted element!");
       return;
@@ -57,7 +59,7 @@ export default function useMorph(opts = defaultsOptions) {
     // if (isAnimating) return;
     isAnimating = true;
 
-    const { prevSpring } = refs[id] || {};
+    const prevSpring = prevSpringRef.current;
 
     switch (options.type) {
       case "fade":
@@ -77,12 +79,13 @@ export default function useMorph(opts = defaultsOptions) {
               ? prevSpring.currentVelocity * -1
               : 0,
           onUpdate(s) {
-            setRefs(id, { prevSpring: s });
+            prevSpringRef.current = s;
           },
           options
         });
 
-        setRefs(id, { cleanupFrom: cleanup });
+        cleanupFromRef.current = cleanup;
+      // setRefs(id, { cleanupFrom: cleanup });
     }
 
     return () => {
@@ -90,35 +93,39 @@ export default function useMorph(opts = defaultsOptions) {
     };
   };
 
-  const getRef = (id = "__MORPH__") => {
-    return useCallback(node => {
-      const { cleanupFrom } = refs[id] || {};
-      const willAnimate = !!node && !!refs[id];
-      console.log("id: ", id, !!node);
+  const getRef = useCallback(to => {
+    // const { cleanupFrom } = refs[id] || {};
+    const from = prevToRef.current;
+    const cleanupFrom = cleanupFromRef.current;
 
-      if (cleanupFrom) cleanupFrom();
-      if (!node) {
-        if (cleanup) cleanup();
-        if (!willAnimate) dispatch({ type: "RESET_OTHERS", id });
-        return;
-      }
+    const willAnimate = !!to && !!from;
 
-      const { from, rectFrom } = refs[id] || {};
-      const to = node;
+    if (cleanupFrom) cleanupFrom();
+    if (!to) {
+      if (cleanup) cleanup();
+      // if (!willAnimate) dispatch({ type: "RESET_OTHERS", id });
+      return;
+    }
 
-      const rectTo = getRect(to, { getMargins: options.getMargins });
+    // const { from, rectFrom } = refs[id] || {};
 
-      animate({ id, from, rectFrom, to, rectTo });
+    const rectFrom = preToRectRef.current;
 
-      const morphElement = {
-        from: to,
-        rectFrom: rectTo,
-        cleanupFrom: cleanup
-      };
+    const rectTo = getRect(to, { getMargins: options.getMargins });
 
-      setRefs(id, morphElement);
-    }, []);
-  };
+    animate({ from, rectFrom, to, rectTo });
+
+    prevToRef.current = to;
+    preToRectRef.current = rectTo;
+
+    // const morphElement = {
+    //   from: to,
+    //   rectFrom: rectTo,
+    //   cleanupFrom: cleanup
+    // };
+
+    // setRefs(id, morphElement);
+  }, []);
 
   // const ref = useRef();
   // const idRef = useRef();
@@ -130,8 +137,8 @@ export default function useMorph(opts = defaultsOptions) {
   // }, []);
 
   const props = {
-    ref: getRef(),
-    style: { visibility: "hidden" },
+    ref: getRef,
+    style: { visibility: "hidden" }
     // "data-rm": id,
     // ...(options.onClick ? { onClick: options.onClick } : {})
   };
