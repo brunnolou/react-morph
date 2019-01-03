@@ -1,7 +1,7 @@
 import {
   useRef,
   useCallback,
-  useReducer
+  // useReducer
   // useLayoutEffect,
   // useEffect
 } from "react";
@@ -20,24 +20,24 @@ const defaultsOptions = {
   }
 };
 
-const initialState = {};
+// const initialState = {};
 
-function reducer(state, { type, id, value }) {
-  switch (type) {
-    case "SET":
-      return { ...state, [id]: { ...(state[id] || {}), ...value } };
-    case "RESET_OTHERS":
-      return { [id]: state[id] };
-    default:
-      return state;
-  }
-}
+// function reducer(state, { type, id, value }) {
+//   switch (type) {
+//     case "SET":
+//       return { ...state, [id]: { ...(state[id] || {}), ...value } };
+//     case "RESET_OTHERS":
+//       return { [id]: state[id] };
+//     default:
+//       return state;
+//   }
+// }
 
 export default function useMorph(opts = defaultsOptions) {
   const options = { ...defaultsOptions, ...opts };
 
-  const [refs, dispatch] = useReducer(reducer, initialState);
-  const setRefs = (id, value) => dispatch({ type: "SET", id, value });
+  // const [refs, dispatch] = useReducer(reducer, initialState);
+  // const setRefs = (id, value) => dispatch({ type: "SET", id, value });
 
   const prevToRef = useRef();
   const preToRectRef = useRef();
@@ -98,7 +98,7 @@ export default function useMorph(opts = defaultsOptions) {
     const from = prevToRef.current;
     const cleanupFrom = cleanupFromRef.current;
 
-    const willAnimate = !!to && !!from;
+    // const willAnimate = !!to && !!from;
 
     if (cleanupFrom) cleanupFrom();
     if (!to) {
