@@ -4,8 +4,8 @@ const defaultData = {
   state: "entered"
 };
 
-const getItems = (list, data = defaultData) => {
-  return list.map((item, index) => ({ item, index, ...data }));
+const getItems = (list, options) => {
+  return list.map((item, index) => ({ ...defaultData, item, index }));
 };
 
 export default getItems;

@@ -33,7 +33,7 @@ const isEqual = (arr1, arr2) => {
   return true;
 };
 
-const useDelay = (nextList, options) => {
+const useAnimatedList = (nextList, options = {}) => {
   const { key } = { ...defaultOptions, ...options };
   const [dList, setList] = useState(getItems(nextList));
 
@@ -51,14 +51,14 @@ const useDelay = (nextList, options) => {
     const diff = arrayDiff(prevKeys, nextKeys);
     const dList = diff.map(({ key, index, value }) => {
       return {
-        item: key,
+        key,
+        item: value >= 0 ? nextList[index] : prevList[index],
         in: value >= 0,
         t: 1,
         index,
         state: getState(value)
       };
     });
-
 
     setList(dList);
     setState("ANIMATING");
@@ -124,4 +124,4 @@ const useDelay = (nextList, options) => {
   return [dList, state];
 };
 
-export default useDelay;
+export default useAnimatedList;
