@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import arrayDiff from "./arrayDiff";
-import getItems from "./getItems";
+import _getItems from "./getItems";
 import useWobble from "../useSpring/useSpring";
 import usePrevious from "../usePrevious";
 
@@ -34,7 +34,9 @@ const isEqual = (arr1, arr2) => {
 };
 
 const useAnimatedList = (nextList, options = {}) => {
-  const { key } = { ...defaultOptions, ...options };
+  const opts = { ...defaultOptions, ...options };
+  const { key } = opts;
+  const getItems = _getItems(opts);
   const [dList, setList] = useState(getItems(nextList));
 
   const prevList = usePrevious(nextList) || nextList;
@@ -51,7 +53,7 @@ const useAnimatedList = (nextList, options = {}) => {
     const diff = arrayDiff(prevKeys, nextKeys);
     const dList = diff.map(({ key, index, value }) => {
       return {
-        key,
+        key: value >= 0 ? key + value : key,
         item: value >= 0 ? nextList[index] : prevList[index],
         in: value >= 0,
         t: 1,

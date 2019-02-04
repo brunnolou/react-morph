@@ -3,7 +3,7 @@ import {
   useCallback,
   // useReducer
   // useLayoutEffect,
-  // useEffect
+  useEffect
 } from "react";
 
 import morphTransition from "./morphTransition";
@@ -34,7 +34,11 @@ const defaultsOptions = {
 // }
 
 export default function useMorph(opts = defaultsOptions) {
-  const options = { ...defaultsOptions, ...opts };
+	const options = { ...defaultsOptions, ...opts };
+
+	useEffect(() => {
+		console.log('morph');
+	}, [])
 
   // const [refs, dispatch] = useReducer(reducer, initialState);
   // const setRefs = (id, value) => dispatch({ type: "SET", id, value });
@@ -53,7 +57,8 @@ export default function useMorph(opts = defaultsOptions) {
       return;
     }
 
-    to.style.visibility = "visible";
+		to.style.visibility = "visible";
+		// console.log('to: ', to.innerText);
 
     if (!from) return;
     // if (isAnimating) return;

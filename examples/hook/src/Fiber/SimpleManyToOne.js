@@ -1,11 +1,18 @@
 import useMorph from "../useMorph";
 import React, { useState } from "react";
+import useAnimatedList from "../useDelay/useDelay";
 
 function SimpleManyToOne() {
   // ... (toggle state should be handled normally)
   const [currentIndex, open] = useState(null);
 
   const list = ["first", "second", "third"];
+  const [dList] = useAnimatedList(list.filter(x => x !== list[currentIndex]));
+  // const morphs = [
+  // 	useMorph(),
+  // 	useMorph(),
+  // 	useMorph(),
+  // ]
   const morphs = list.map(() => useMorph());
 
   return (
@@ -36,8 +43,13 @@ function SimpleManyToOne() {
 
       <main className="simple">
         <nav>
-          {list.filter(x => x !== list[currentIndex]).map((key, index) => (
-            <a className="card" {...morphs[index]} onClick={() => open(index)} key={key}>
+          {dList.map(({ item, key }, index) => (
+            <a
+              className="card"
+              {...morphs[index]}
+              onClick={() => open(index)}
+              key={key}
+            >
               {key}
             </a>
           ))}
