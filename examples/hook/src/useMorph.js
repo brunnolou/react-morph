@@ -1,11 +1,4 @@
-import {
-  useRef,
-  useCallback,
-  useState,
-  // useReducer
-  // useLayoutEffect,
-  useEffect
-} from "react";
+import { useRef, useCallback, useEffect } from "react";
 
 import morphTransition from "./morphTransition";
 import { getRect } from "./utils";
@@ -21,24 +14,9 @@ const defaultsOptions = {
   }
 };
 
-// const initialState = {};
-
-// function reducer(state, { type, id, value }) {
-//   switch (type) {
-//     case "SET":
-//       return { ...state, [id]: { ...(state[id] || {}), ...value } };
-//     case "RESET_OTHERS":
-//       return { [id]: state[id] };
-//     default:
-//       return state;
-//   }
-// }
-
 export default function useMorph(opts = defaultsOptions) {
   const options = { ...defaultsOptions, ...opts };
-
-  // const [refs, dispatch] = useReducer(reducer, initialState);
-  // const setRefs = (id, value) => dispatch({ type: "SET", id, value });
+  const { getMargins } = options;
 
   const prevToRef = useRef();
   const prevToRectRef = useRef();
@@ -49,14 +27,10 @@ export default function useMorph(opts = defaultsOptions) {
   let cleanup;
 
   useEffect(() => {
-		console.log('prevToRef.current: ', prevToRef.current);
-
-		if(!prevToRef.current) return;
+    if (!prevToRef.current) return;
 
     function resize() {
-      prevToRectRef.current = getRect(prevToRef.current, {
-				getMargins: options.getMargins
-      });
+      prevToRectRef.current = getRect(prevToRef.current, { getMargins });
     }
 
     window.addEventListener("resize", resize);
@@ -71,10 +45,9 @@ export default function useMorph(opts = defaultsOptions) {
     }
 
     to.style.visibility = "visible";
-    // console.log('to: ', to.innerText);
 
     if (!from) return;
-    // if (isAnimating) return;
+
     isAnimating = true;
 
     const prevSpring = prevSpringRef.current;
@@ -104,7 +77,6 @@ export default function useMorph(opts = defaultsOptions) {
         });
 
         cleanupFromRef.current = cleanup;
-      // setRefs(id, { cleanupFrom: cleanup });
     }
 
     return () => {
@@ -115,18 +87,16 @@ export default function useMorph(opts = defaultsOptions) {
   const getRef = useCallback((to, willBack, isBackwards) => {
     const from = prevToRef.current;
     const cleanupFrom = cleanupFromRef.current;
-    // const willAnimate = !!to && !!from;
 
     if (cleanupFrom) cleanupFrom();
     if (!to) {
       if (cleanup) cleanup();
-      // if (!willAnimate) dispatch({ type: "RESET_OTHERS", id });
       return;
     }
 
     const rectFrom = prevToRectRef.current;
 
-    const rectTo = getRect(to, { getMargins: options.getMargins });
+    const rectTo = getRect(to, { getMargins });
 
     if (isBackwards) {
       animate({ from: to, rectFrom: rectTo, to: from, rectTo: rectFrom });
@@ -138,30 +108,11 @@ export default function useMorph(opts = defaultsOptions) {
       prevToRef.current = to;
       prevToRectRef.current = rectTo;
     }
-
-    // const morphElement = {
-    //   from: to,
-    //   rectFrom: rectTo,
-    //   cleanupFrom: cleanup
-    // };
-
-    // setRefs(id, morphElement);
   }, []);
-
-  // const ref = useRef();
-  // const idRef = useRef();
-  // const cache = {};
-
-  // useLayoutEffect(() => {
-  //   const to = ref.current;
-  //   console.log("to: ", cache);
-  // }, []);
 
   const props = {
     ref: getRef,
     style: { visibility: "hidden" }
-    // "data-rm": id,
-    // ...(options.onClick ? { onClick: options.onClick } : {})
   };
 
   return props;

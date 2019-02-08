@@ -4,32 +4,34 @@ import "./App.css";
 
 import useMorph from "./useMorph";
 import { useMultiMorph } from "./createMorphed/useMultiMorph";
-import { morphed } from "./createMorphed/createMorphed";
+import morphed from "./createMorphed/createMorphed";
 const spring = {
   damping: 26,
   mass: 1,
   stiffness: 170
 };
 
+const Div = morphed("div");
+
 const Item = ({ morphs, index, name, id }) => (
-  <morphed.div className="container" morph={morphs.container[index]}>
-    <morphed.div className="avatar" morpha={morphs.focus[index]} />
-    <morphed.p morpha={morphs.fade[index]}>{name}</morphed.p>
-  </morphed.div>
+  <div className="container" {...morphs.container[index]}>
+    <div className="avatar" {...morphs.focus[index]} />
+    <p {...morphs.fade[index]}>{name}</p>
+  </div>
 );
 
 const Details = ({ morphs, index, data: { name, id } }) => {
   return (
-    <morphed.div
-      willBack
+    <Div
       className="container container--lg"
       morph={morphs.container[index]}
+      willBack
     >
-      <morphed.div willBack className="avatar" morpha={morphs.focus[index]} />
-      <morphed.h1 willBack morpha={morphs.fade[index]}>
+      <Div willBack className="avatar" morph={morphs.focus[index]} />
+      <morphed.h1 willBack morph={morphs.fade[index]}>
         {name}
       </morphed.h1>
-    </morphed.div>
+    </Div>
   );
 };
 
