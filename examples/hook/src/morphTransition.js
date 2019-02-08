@@ -7,7 +7,7 @@ import {
   diffRect,
   getTransformString,
   cloneElement,
-  lerp,
+  lerp
   // constPowerEase
 } from "./utils";
 
@@ -18,7 +18,7 @@ const resetTranslate = {
   scaleY: 1
 };
 
-const ease = cubicBezier(.9,.9,.37,.98);
+const ease = cubicBezier(0.9, 0.9, 0.37, 0.98);
 const easeRev = reversed(ease);
 const easeInOut = cubicBezier(0.5, 0.5, 0, 1);
 
@@ -40,6 +40,7 @@ export default function({
   onUpdate = () => {},
   onStart = () => {},
   onStop = () => {},
+  willBack,
   options
 }) {
   const spring = new Spring({
@@ -107,9 +108,9 @@ export default function({
     options.portalElement.removeChild(toContainer);
     options.portalElement.removeChild(fromContainer);
     to.style.visibility = ""; // show original to
-    from.style.visibility = ""; // show original to
+    if (!willBack) from.style.visibility = ""; // show original to
 
-    isDeleted = true;
+		isDeleted = true;
   };
 
   return cleanup;

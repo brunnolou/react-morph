@@ -1,6 +1,7 @@
 import {
   useRef,
   useCallback,
+  useState,
   // useReducer
   // useLayoutEffect,
   useEffect
@@ -34,11 +35,7 @@ const defaultsOptions = {
 // }
 
 export default function useMorph(opts = defaultsOptions) {
-	const options = { ...defaultsOptions, ...opts };
-
-	useEffect(() => {
-		console.log('morph');
-	}, [])
+  const options = { ...defaultsOptions, ...opts };
 
   // const [refs, dispatch] = useReducer(reducer, initialState);
   // const setRefs = (id, value) => dispatch({ type: "SET", id, value });
@@ -51,14 +48,14 @@ export default function useMorph(opts = defaultsOptions) {
   let isAnimating = false;
   let cleanup;
 
-  const animate = ({ from, to, rectFrom, rectTo }) => {
+  const animate = ({ from, to, rectFrom, rectTo, willBack }) => {
     if (!to) {
       console.warn("Morph created without any mounted element!");
       return;
     }
 
-		to.style.visibility = "visible";
-		// console.log('to: ', to.innerText);
+    to.style.visibility = "visible";
+    // console.log('to: ', to.innerText);
 
     if (!from) return;
     // if (isAnimating) return;
@@ -85,7 +82,8 @@ export default function useMorph(opts = defaultsOptions) {
               : 0,
           onUpdate(s) {
             prevSpringRef.current = s;
-          },
+					},
+					willBack,
           options
         });
 
@@ -98,11 +96,9 @@ export default function useMorph(opts = defaultsOptions) {
     };
   };
 
-  const getRef = useCallback(to => {
-    // const { cleanupFrom } = refs[id] || {};
+  const getRef = useCallback((to, willBack, isBackwards) => {
     const from = prevToRef.current;
     const cleanupFrom = cleanupFromRef.current;
-
     // const willAnimate = !!to && !!from;
 
     if (cleanupFrom) cleanupFrom();
@@ -112,16 +108,20 @@ export default function useMorph(opts = defaultsOptions) {
       return;
     }
 
-    // const { from, rectFrom } = refs[id] || {};
-
     const rectFrom = preToRectRef.current;
 
     const rectTo = getRect(to, { getMargins: options.getMargins });
 
-    animate({ from, rectFrom, to, rectTo });
+    if (isBackwards) {
+      animate({ from: to, rectFrom: rectTo, to: from, rectTo: rectFrom });
+    } else {
+      animate({ from, rectFrom, to, rectTo, willBack });
+    }
 
-    prevToRef.current = to;
-    preToRectRef.current = rectTo;
+    if (!willBack) {
+      prevToRef.current = to;
+      preToRectRef.current = rectTo;
+    }
 
     // const morphElement = {
     //   from: to,

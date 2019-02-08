@@ -10,9 +10,9 @@ const spring = {
 };
 
 const Item = ({ morph }) => (
-  <div key="from" className="container" {...morph.morphContainer()}>
-    <div className="avatar" {...morph.morphFocus()} />
-    <p {...morph.morphFade()}>Hello Morph hook!</p>
+  <div key="from" className="container" {...morph.morphContainer}>
+    <div className="avatar" {...morph.morphFocus} />
+    <p {...morph.morphFade}>Hello Morph hook!</p>
   </div>
 );
 
@@ -21,10 +21,10 @@ const Details = ({ morph }) => {
     <div
       key="to"
       className="container container--lg"
-      {...morph.morphContainer()}
+      {...morph.morphContainer}
     >
-      <div className="avatar" {...morph.morphFocus()} />
-      <h1 key="fade-to" {...morph.morphFade()}>
+      <div className="avatar" {...morph.morphFocus} />
+      <h1 key="fade-to" {...morph.morphFade}>
         Hello Morph hook!
       </h1>
     </div>
