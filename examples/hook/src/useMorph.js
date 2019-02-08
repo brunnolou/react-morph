@@ -41,12 +41,28 @@ export default function useMorph(opts = defaultsOptions) {
   // const setRefs = (id, value) => dispatch({ type: "SET", id, value });
 
   const prevToRef = useRef();
-  const preToRectRef = useRef();
+  const prevToRectRef = useRef();
   const prevSpringRef = useRef();
   const cleanupFromRef = useRef();
 
   let isAnimating = false;
   let cleanup;
+
+  useEffect(() => {
+		console.log('prevToRef.current: ', prevToRef.current);
+
+		if(!prevToRef.current) return;
+
+    function resize() {
+      prevToRectRef.current = getRect(prevToRef.current, {
+				getMargins: options.getMargins
+      });
+    }
+
+    window.addEventListener("resize", resize);
+
+    return () => window.removeEventListener("resize", resize);
+  }, []);
 
   const animate = ({ from, to, rectFrom, rectTo, willBack }) => {
     if (!to) {
@@ -82,8 +98,8 @@ export default function useMorph(opts = defaultsOptions) {
               : 0,
           onUpdate(s) {
             prevSpringRef.current = s;
-					},
-					willBack,
+          },
+          willBack,
           options
         });
 
@@ -108,7 +124,7 @@ export default function useMorph(opts = defaultsOptions) {
       return;
     }
 
-    const rectFrom = preToRectRef.current;
+    const rectFrom = prevToRectRef.current;
 
     const rectTo = getRect(to, { getMargins: options.getMargins });
 
@@ -120,7 +136,7 @@ export default function useMorph(opts = defaultsOptions) {
 
     if (!willBack) {
       prevToRef.current = to;
-      preToRectRef.current = rectTo;
+      prevToRectRef.current = rectTo;
     }
 
     // const morphElement = {

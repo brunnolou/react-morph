@@ -1,8 +1,8 @@
 import React from "react";
-import useMorph from "./useMorph";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-
 import "./App.css";
+
+import useMorph from "./useMorph";
 import { useMultiMorph } from "./createMorphed/useMultiMorph";
 import { morphed } from "./createMorphed/createMorphed";
 const spring = {
@@ -11,44 +11,40 @@ const spring = {
   stiffness: 170
 };
 
-const Item = ({ morph, name, id }) => (
-  <morphed.div key="from" className="container" morph={morph}>
-    {/* <morphed.div className="avatar" {...morph.morphFocus} />
-    <p {...morph.morphFade}>{name}</p> */}
+const Item = ({ morphs, index, name, id }) => (
+  <morphed.div className="container" morph={morphs.container[index]}>
+    <morphed.div className="avatar" morpha={morphs.focus[index]} />
+    <morphed.p morpha={morphs.fade[index]}>{name}</morphed.p>
   </morphed.div>
 );
 
-const Details = ({ morph, data: { name, id } }) => {
+const Details = ({ morphs, index, data: { name, id } }) => {
   return (
-    <morphed.div willBack key="to" className="container container--lg" morph={morph}>
-      {/* <morphed.div className="avatar" {...morph.morphFocus} />
-      <h1 key="fade-to" {...morph.morphFade}>
+    <morphed.div
+      willBack
+      className="container container--lg"
+      morph={morphs.container[index]}
+    >
+      <morphed.div willBack className="avatar" morpha={morphs.focus[index]} />
+      <morphed.h1 willBack morpha={morphs.fade[index]}>
         {name}
-      </h1> */}
+      </morphed.h1>
     </morphed.div>
   );
 };
 
 function App() {
-  // const morphPage = useMorph({ spring });
-  const morphContainer = useMorph({ spring });
-  const morphFade = useMorph({ spring, zIndex: 2 });
-  const morphFocus = useMorph({ spring, zIndex: 3 });
-
   const items = [
     { id: "1", name: "Hello Morph" },
     { id: "2", name: "Morphing is awesome" },
     { id: "3", name: "Multiple morphs?" }
   ];
 
-  const [fromMorphs, toMorphs] = useMultiMorph(items, { spring });
-
-  // const morph = {
-  // 	// morphPage,
-  //   morphContainer,
-  //   morphFade,
-  //   morphFocus
-  // };
+  const morphs = {
+    container: useMultiMorph(items, { spring }),
+    fade: useMultiMorph(items, { spring, zIndex: 2 }),
+    focus: useMultiMorph(items, { spring, zIndex: 3 })
+  };
 
   return (
     <Router>
@@ -64,7 +60,7 @@ function App() {
             <div>
               {items.filter(i => 1).map((i, index) => (
                 <Link to={"/details/" + i.id} key={i.id}>
-                  <Item morph={fromMorphs[index]} {...i} />
+                  <Item {...i} morphs={morphs} index={index} />
                 </Link>
               ))}
             </div>
@@ -81,7 +77,8 @@ function App() {
             return (
               <Details
                 key={id}
-                morph={fromMorphs[items.findIndex(x => x.id === id)]}
+                morphs={morphs}
+                index={items.findIndex(x => x.id === id)}
                 data={items.find(x => x.id === id)}
               />
             );

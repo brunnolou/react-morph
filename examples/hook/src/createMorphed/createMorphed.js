@@ -8,6 +8,7 @@ function createMorphed(Component) {
     index = null,
     ...props
   }) => {
+    if (!morph) return <Component {...props} />;
     const isMountedRef = useRef(true);
     const nodeRef = useRef();
 
@@ -50,6 +51,7 @@ function createMorphed(Component) {
 
 export const morphed = {
   h1: createMorphed("h1"),
+  p: createMorphed("p"),
   div: createMorphed("div"),
   a: createMorphed("a")
 };
