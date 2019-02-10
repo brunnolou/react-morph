@@ -1,6 +1,6 @@
-import useMorph from "../useMorph";
+// import useMorph from "../useMorph";
 import React, { useState } from "react";
-import useAnimatedList from "../useDelay/useDelay";
+// import useAnimatedList from "../useDelay/useDelay";
 import { morphed } from "./createMorphed";
 import { useMultiMorph } from "./useMultiMorph";
 

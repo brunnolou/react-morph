@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import "./App.css";
 
 import useMorph from "./useMorph";
 import { useMultiMorph } from "./createMorphed/useMultiMorph";
@@ -14,24 +13,25 @@ const spring = {
 const Div = morphed("div");
 
 const Item = ({ morphs, index, name, id }) => (
-  <div className="container" {...morphs.container[index]}>
-    <div className="avatar" {...morphs.focus[index]} />
-    <p {...morphs.fade[index]}>{name}</p>
-  </div>
+  <Div className="container" morph={morphs.container[index]}>
+    <Div className="avatar" morpha={morphs.focus[index]} />
+    <morphed.p morpha={morphs.fade[index]}>{name}</morphed.p>
+  </Div>
 );
 
 const Details = ({ morphs, index, data: { name, id } }) => {
   return (
-    <Div
+    <div
       className="container container--lg"
-      morph={morphs.container[index]}
+      {...morphs.container[index]}
       willBack
     >
-      <Div willBack className="avatar" morph={morphs.focus[index]} />
-      <morphed.h1 willBack morph={morphs.fade[index]}>
+      <div willBack className="avatar" morpha={morphs.focus[index]} />
+
+      <morphed.h1 willBack morpha={morphs.fade[index]}>
         {name}
       </morphed.h1>
-    </Div>
+    </div>
   );
 };
 

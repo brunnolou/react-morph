@@ -3,7 +3,8 @@ import useMorph from "../useMorph";
 
 function Simple() {
   // ... (toggle state should be handled normally)
-  const [isToggle, setToggle] = useState();
+  const [isToggle, setToggle] = useState(true);
+  const [isToggleTo, setToggleTo] = useState(false);
 
   const morph = useMorph();
 
@@ -22,16 +23,29 @@ function Simple() {
 				`}
       </style>
 
-      <button onClick={() => setToggle(!isToggle)}>Toggle</button>
+      <button onClick={() => setToggle(!isToggle)}>Toggle From</button>
+      <button onClick={() => setToggleTo(!isToggleTo)}>Toggle To</button>
 
       <main>
-        {isToggle ? (
+        {/* {isToggle ? (
           <div key="hello" className="myStyle" {...morph}>
-            Hello
+            From
           </div>
         ) : (
           <div key="world" className="myOtherStyle" {...morph}>
-            World
+            To
+          </div>
+        )} */}
+
+        {isToggle && (
+          <div key="hello" className="myStyle" {...morph}>
+            From
+          </div>
+        )}
+
+        {isToggleTo && (
+          <div key="world" className="myOtherStyle" {...morph}>
+            To
           </div>
         )}
       </main>

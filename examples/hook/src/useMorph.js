@@ -39,10 +39,7 @@ export default function useMorph(opts = defaultsOptions) {
   }, []);
 
   const animate = ({ from, to, rectFrom, rectTo, willBack }) => {
-    if (!to) {
-      console.warn("Morph created without any mounted element!");
-      return;
-    }
+    if (!to) return;
 
     to.style.visibility = "visible";
 
@@ -88,9 +85,31 @@ export default function useMorph(opts = defaultsOptions) {
     const from = prevToRef.current;
     const cleanupFrom = cleanupFromRef.current;
 
-    if (cleanupFrom) cleanupFrom();
-    if (!to) {
-      if (cleanup) cleanup();
+    const willUnmount = !to;
+    const willAnimate = !!to && !!from;
+
+    console.log(
+      !!to ? "|" + to.innerHTML + "|" : "",
+      "prev:",
+      !!from,
+      " next:",
+      !!to,
+      " willUnmount:",
+      willUnmount,
+      " willAnimate:",
+      willAnimate
+    );
+
+    if (cleanupFrom) {
+      console.log("cleanupFrom: ", !!cleanupFrom);
+      cleanupFrom();
+    }
+
+    if (willUnmount) {
+      if (cleanup) {
+        console.log("cleanup: ", !!cleanup);
+        cleanup();
+      }
       return;
     }
 

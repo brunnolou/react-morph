@@ -22,15 +22,50 @@ function Simple() {
 }
 ```
 
-## List transition (Many-to-1)
+## List transition (Many-to-One)
 
 ```js
 ```
 
 ## States in depth
 
-| type         | node | previous | action  |
-| ------------ | ---- | -------- | ------- |
-| from mount   | y    | -        | -       |
-| from unmount | -    | y        | cleanup |
-| to mount     | y    | y        | animate |
+### `ref={}` calls when from is unmounted (toggled)
+
+| #   | Element | Mounted | Prev node | Action  |
+| --- | ------- | ------- | --------- | ------- |
+| 1   | From    | Yes     | .         | .       |
+| 2   | From    | -       | Yes       | .       |
+| 3   | To      | Yes     | Yes       | Animate |
+| 4   | To      | .       | Yes       | .       |
+| 5   | From    | Yes     | Yes       | Animate |
+| 2   | From    | -       | Yes       | .       |
+
+### Without unmounting FromNode `ref={}` calls
+
+| #   | Element | Mounted | Prev node | Action  |
+| --- | ------- | ------- | --------- | ------- |
+| 1   | From    | Yes     | .         | .       |
+| 2   | To      | Yes     | Yes       | Animate |
+| 3   | To      | .       | Yes       | .       |
+
+
+.
+
+.
+
+---
+
+### `ref={}` calls
+
+| type             | node | previous | action  |
+| ---------------- | ---- | -------- | ------- |
+| FromNode mount   | y    | –        | –       |
+| FromNode unmount | –    | y        | cleanup |
+| ToNode mount     | y    | y        | animate |
+
+### Without unmounting FromNode `ref={}` calls
+
+| type           | node | previous | action  |
+| -------------- | ---- | -------- | ------- |
+| FromNode mount | y    | –        | –       |
+| ToNode mount   | y    | y        | animate |

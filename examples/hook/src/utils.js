@@ -40,8 +40,7 @@ export const getTransformString = (
 
 export const getRect = (elm, { getMargins = false } = {}) => {
   const box = elm.getBoundingClientRect();
-	const styles = getComputedStyle(elm);
-	console.log('box.left: ', box.left);
+  const styles = getComputedStyle(elm);
 
   return {
     top: px(
