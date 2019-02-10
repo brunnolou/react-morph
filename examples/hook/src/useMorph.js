@@ -4,9 +4,10 @@ import morphTransition from "./morphTransition";
 import { getRect } from "./utils";
 
 const defaultsOptions = {
-  portalElement: document.body,
+	keepFrom: false,
+	type: "morph",
   getMargins: false,
-  type: "morph",
+  portalElement: document.body,
   spring: {
     damping: 26,
     mass: 1,
@@ -16,8 +17,9 @@ const defaultsOptions = {
 
 export default function useMorph(opts = defaultsOptions) {
   const options = { ...defaultsOptions, ...opts };
-  const { getMargins } = options;
+  const { getMargins, keepFrom } = options;
 
+  const backAnimationRef = useRef();
   const prevToRef = useRef();
   const prevToRectRef = useRef();
   const prevSpringRef = useRef();
@@ -81,47 +83,40 @@ export default function useMorph(opts = defaultsOptions) {
     };
   };
 
-  const getRef = useCallback((to, willBack, isBackwards) => {
+  const getRef = useCallback(to => {
     const from = prevToRef.current;
     const cleanupFrom = cleanupFromRef.current;
 
     const willUnmount = !to;
     const willAnimate = !!to && !!from;
 
-    console.log(
-      !!to ? "|" + to.innerHTML + "|" : "",
-      "prev:",
-      !!from,
-      " next:",
-      !!to,
-      " willUnmount:",
-      willUnmount,
-      " willAnimate:",
-      willAnimate
-    );
+    const willBack = keepFrom && willAnimate;
+    const isBackwards = keepFrom && willUnmount && !!from;
 
-    if (cleanupFrom) {
-      console.log("cleanupFrom: ", !!cleanupFrom);
-      cleanupFrom();
+    if (cleanupFrom) cleanupFrom();
+
+    if (isBackwards) {
+      animate(backAnimationRef.current);
+      console.log("backAnimationRef.current: ", backAnimationRef.current);
+      return;
     }
 
     if (willUnmount) {
-      if (cleanup) {
-        console.log("cleanup: ", !!cleanup);
-        cleanup();
-      }
+      if (cleanup) cleanup();
       return;
     }
 
     const rectFrom = prevToRectRef.current;
-
     const rectTo = getRect(to, { getMargins });
 
-    if (isBackwards) {
-      animate({ from: to, rectFrom: rectTo, to: from, rectTo: rectFrom });
-    } else {
-      animate({ from, rectFrom, to, rectTo, willBack });
-    }
+    animate({ from, rectFrom, to, rectTo, willBack });
+
+    backAnimationRef.current = {
+      from: to,
+      rectFrom: { ...rectTo },
+      to: from,
+      rectTo: { ...rectFrom }
+    };
 
     if (!willBack) {
       prevToRef.current = to;

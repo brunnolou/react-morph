@@ -1,13 +1,13 @@
 ## Simple example
 
 ```js
-function Simple() {
+function Toggle() {
   // ... (toggle state should be handled normally)
 
   const morph = useMorph();
 
   return (
-    <main>
+    <div>
       {toggle ? (
         <div className="myStyle" {...morph()}>
           Hello
@@ -17,7 +17,7 @@ function Simple() {
           World
         </div>
       )}
-    </main>
+    </div>
   );
 }
 ```
@@ -29,7 +29,9 @@ function Simple() {
 
 ## States in depth
 
-### `ref={}` calls when from is unmounted (toggled)
+### `ref={}` calls when:
+
+#### The "From element" is unmounted (toggled)
 
 | #   | Element | Mounted | Prev node | Action  |
 | --- | ------- | ------- | --------- | ------- |
@@ -38,34 +40,15 @@ function Simple() {
 | 3   | To      | Yes     | Yes       | Animate |
 | 4   | To      | .       | Yes       | .       |
 | 5   | From    | Yes     | Yes       | Animate |
-| 2   | From    | -       | Yes       | .       |
+| ↻ 2 | From    | -       | Yes       | .       |
 
-### Without unmounting FromNode `ref={}` calls
+#### The "From element" is not unmounted
 
-| #   | Element | Mounted | Prev node | Action  |
-| --- | ------- | ------- | --------- | ------- |
-| 1   | From    | Yes     | .         | .       |
-| 2   | To      | Yes     | Yes       | Animate |
-| 3   | To      | .       | Yes       | .       |
+With `{ keepFrom: true }`
 
-
-.
-
-.
-
----
-
-### `ref={}` calls
-
-| type             | node | previous | action  |
-| ---------------- | ---- | -------- | ------- |
-| FromNode mount   | y    | –        | –       |
-| FromNode unmount | –    | y        | cleanup |
-| ToNode mount     | y    | y        | animate |
-
-### Without unmounting FromNode `ref={}` calls
-
-| type           | node | previous | action  |
-| -------------- | ---- | -------- | ------- |
-| FromNode mount | y    | –        | –       |
-| ToNode mount   | y    | y        | animate |
+| #   | Element | Mounted | Prev node | Action       |
+| --- | ------- | ------- | --------- | ------------ |
+| 1   | From    | Yes     | .         | .            |
+| 2   | To      | Yes     | Yes       | Animate      |
+| 3   | To      | .       | Yes       | Animate back |
+| ↻ 2 | To      | Yes     | Yes       | Animate      |

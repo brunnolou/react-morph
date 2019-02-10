@@ -6,7 +6,7 @@ function Simple() {
   const [isToggle, setToggle] = useState(true);
   const [isToggleTo, setToggleTo] = useState(false);
 
-  const morph = useMorph();
+  const morph = useMorph({ keepFrom: false });
 
   return (
     <>
