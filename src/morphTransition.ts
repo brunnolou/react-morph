@@ -1,5 +1,5 @@
-import { Spring } from "wobble";
-import { clamp, cubicBezier, interpolate, reversed } from "@popmotion/popcorn";
+import { Spring, SpringListenerFn } from 'wobble';
+import { cubicBezier, interpolate, reversed } from '@popmotion/popcorn';
 
 import {
   interpolateObject,
@@ -7,15 +7,16 @@ import {
   diffRect,
   getTransformString,
   cloneElement,
-  lerp
-  // constPowerEase
-} from "./utils";
+  lerp,
+  clamp,
+} from './util';
+import { MorphOptions } from './types';
 
 const resetTranslate = {
   translateX: 0,
   translateY: 0,
   scaleX: 1,
-  scaleY: 1
+  scaleY: 1,
 };
 
 const ease = cubicBezier(0.9, 0.9, 0.37, 0.98);
@@ -25,10 +26,26 @@ const easeInOut = cubicBezier(0.5, 0.5, 0, 1);
 const fadeDistance = 0.1;
 const halfClampEnd = clamp(1 - fadeDistance, 1);
 const halfClampStart = clamp(0, fadeDistance);
-const easeFast = x =>
-  easeInOut(interpolate([1 - fadeDistance, 1], [0, 1])(halfClampEnd(x)));
-const easeSlow = x =>
-  easeInOut(interpolate([0, fadeDistance], [0, 1])(halfClampStart(x)));
+const easeFast = (x: number) =>
+  easeInOut(
+    Number(interpolate([1 - fadeDistance, 1], [0, 1])(halfClampEnd(x))),
+  );
+const easeSlow = (x: number) =>
+  easeInOut(Number(interpolate([0, fadeDistance], [0, 1])(halfClampStart(x))));
+
+type Options = {
+  from: HTMLElement;
+  to: HTMLElement;
+  rectFrom: CSSStyleDeclaration;
+  rectTo: CSSStyleDeclaration;
+  fromValue?: number;
+  initialVelocity?: number;
+  onUpdate?: SpringListenerFn;
+  onStart?: SpringListenerFn;
+  onStop?: SpringListenerFn;
+  willBack?: boolean;
+  options: MorphOptions;
+};
 
 export default function({
   from,
@@ -41,13 +58,13 @@ export default function({
   onStart = () => {},
   onStop = () => {},
   willBack,
-  options
-}) {
+  options,
+}: Options) {
   const spring = new Spring({
     fromValue,
     initialVelocity,
     toValue: 1,
-    ...options.spring
+    ...options.spring,
   });
 
   const fromDiffStyle = diffRect(rectFrom, rectTo);
@@ -59,16 +76,16 @@ export default function({
   // hideInnerMorph(toContainer);
   // hideInnerMorph(fromContainer);
 
-  to.style.visibility = "hidden";
-  to.style.pointerEvents = "none";
-  from.style.visibility = "hidden";
-  from.style.pointerEvents = "none";
+  to.style.visibility = 'hidden';
+  to.style.pointerEvents = 'none';
+  from.style.visibility = 'hidden';
+  from.style.pointerEvents = 'none';
 
   applyOverlayStyle(toContainer, rectTo);
   applyOverlayStyle(fromContainer, rectFrom);
 
-  const toFLIP = interpolateObject(fromDiffStyle, resetTranslate);
-  const fromFLIP = interpolateObject(resetTranslate, toDiffStyle);
+  const toFLIP = interpolateObject(fromDiffStyle, resetTranslate, options);
+  const fromFLIP = interpolateObject(resetTranslate, toDiffStyle, options);
 
   const toFade = lerp(0, 1, true);
   const fromFade = lerp(1, 0, true);
@@ -81,19 +98,17 @@ export default function({
       const p = s.currentValue;
 
       switch (options.type) {
-        case "fade":
-          // toContainer.style.color = "red";
-          // fromContainer.style.color = "green";
-          toContainer.style.opacity = toFade(easeFast(p));
-          fromContainer.style.opacity = fromFade(easeSlow(p));
+        case 'fade':
+          toContainer.style.opacity = String(toFade(easeFast(p)));
+          fromContainer.style.opacity = String(fromFade(easeSlow(p)));
           toContainer.style.transform = getTransformString(toFLIP(p));
           fromContainer.style.transform = getTransformString(fromFLIP(p));
 
           break;
-        case "morph":
+        case 'morph':
         default:
-          toContainer.style.opacity = toFade(ease(p));
-          fromContainer.style.opacity = fromFade(easeRev(p));
+          toContainer.style.opacity = String(toFade(ease(p)));
+          fromContainer.style.opacity = String(fromFade(easeRev(p)));
           toContainer.style.transform = getTransformString(toFLIP(p));
           fromContainer.style.transform = getTransformString(fromFLIP(p));
       }
@@ -107,15 +122,17 @@ export default function({
 
   const cleanup = () => {
     if (isDeleted) return;
-    options.portalElement.removeChild(toContainer);
-    options.portalElement.removeChild(fromContainer);
-    to.style.visibility = ""; // show original to
-		to.style.pointerEvents = ""; // show original to
+    if (options.portalElement) {
+      options.portalElement.removeChild(toContainer);
+      options.portalElement.removeChild(fromContainer);
+    }
+    to.style.visibility = ''; // show original to
+    to.style.pointerEvents = ''; // show original to
 
     if (!willBack) {
       // show original from
-      from.style.pointerEvents = "";
-      from.style.visibility = "";
+      from.style.pointerEvents = '';
+      from.style.visibility = '';
     }
     isDeleted = true;
   };

@@ -1,3 +1,10 @@
-extends: eslint-config-skeleton
-rules:
-  no-console: off
+{
+  parserOptions: { parser: "@typescript-eslint/parser" },
+  "extends":
+    [
+      "airbnb-base",
+      "plugin:@typescript-eslint/recommended",
+      "prettier",
+      "prettier/@typescript-eslint",
+    ],
+}

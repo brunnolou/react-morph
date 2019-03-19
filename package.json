@@ -1,13 +1,16 @@
 {
   "name": "react-morph",
-  "version": "0.3.6",
+  "version": "0.4.0-alpha.1",
   "description": "Ui transitions made simple",
-  "main": "lib/index.js",
+  "main": "lib",
+  "types": "lib/index.d.ts",
   "scripts": {
     "preversion": "npm run test && npm run build",
     "prepublishOnly": "npm run build",
-    "build": "rm -rf lib/* && babel src --out-dir lib && babel src --out-file lib/all.js && uglifyjs lib/all.js -m -c -o lib/all.min.js && rm -f lib/all.js",
-    "dev": "rm -rf lib/* && BABEL_ENV=commonjs babel --watch ./src --out-dir ./lib --source-maps",
+    "build": "tsc",
+    "build:docs": "docz build",
+    "dev": "tsc --watch",
+    "dev:docs": "docz dev",
     "test": "eslint src"
   },
   "repository": {
@@ -23,34 +26,40 @@
   },
   "homepage": "https://brunnolou.github.io/react-morph",
   "dependencies": {
-    "keyframe": "^2.1.0",
-    "popmotion": "^8.3.3",
-    "prop-types": "^15.6.0",
-    "raf": "^3.4.0",
-    "react": "^16.2.0",
-    "stylefire": "^1.1.9"
+    "@popmotion/popcorn": ">=0.3.1",
+    "@types/react": ">=16.8.0",
+    "wobble": ">=1.5.1"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.4.1",
+    "@typescript-eslint/parser": "^1.4.1",
+    "ajv-keywords": "^2.1.1",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^10.0.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-regenerator": "^6.26.0",
-    "babel-preset-react-app": "^3.1.0",
-    "eslint": "^4.15.0",
+    "babel-preset-react-app": "^7.0.2",
+    "docz": "^1.0.0-rc.3",
+    "docz-theme-default": "^1.0.0-rc.3",
+    "eslint": "^5.14.1",
     "eslint-config-airbnb": "^16.1.0",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-config-react-app": "^2.0.1",
-    "eslint-config-skeleton": "^0.1.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-config-react-app": "^2.1.0",
+    "eslint-config-skeleton": "^0.1.4",
     "eslint-plugin-flowtype": "^2.44.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-prettier": "^2.4.0",
-    "eslint-plugin-react": "^7.5.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.6.1",
     "prettier": "^1.9.2",
-    "prettier-eslint": "^8.7.0",
-    "react": "^15.0.0-0 || ^16.0.0-0 || ^17.0.0-0",
+    "prettier-eslint": "^8.8.2",
+    "react": ">=16.8.0",
+    "typescript": "^3.3.3333",
     "uglify-js": "^3.2.2"
   }
 }

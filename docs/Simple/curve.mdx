@@ -1,0 +1,98 @@
+---
+name: Curves
+route: /curves
+---
+
+import { Playground } from 'docz';
+import { useState } from 'react';
+import { useMorph } from '../../src/index';
+import { easeInSin, easeOutSin, easeIn, easeOut } from '../../src/easings';
+import { butterfly, larva } from '../images';
+import Simple from './Simple';
+import {
+  circIn,
+  circOut,
+  circInOut,
+  reversed,
+  createMirroredEasing,
+} from '@popmotion/easing';
+
+# Curves
+
+It's possible to create a curve instead of a linear translation between morph states.
+
+In order to achieve that you need to set different easings between `X` and `Y` values.
+
+```js
+useMorph({
+  easings: {
+    translateX: easeOutSin,
+    translateY: easeInSin,
+  },
+});
+```
+
+## Demo
+
+<Playground>{
+	() => {
+	  // Handle toggle state as you normally would.
+	  const [toggle, setToggle] = useState(false);
+	  const morph = useMorph({
+	    isReversed: !toggle,
+	    easings: {
+	      translateX: easeOutSin,
+	      translateY: easeInSin,
+	    },
+	  });
+	  return (
+	    <div>
+	      <button onClick={() => setToggle(!toggle)}>Let's morph!</button>
+	      <br />
+
+          {toggle && <img key="one" {...morph} src={larva} width="30" />}
+
+          <br />
+          <br />
+          <br />
+          <br />
+
+          {!toggle && (
+            <img
+              key="two"
+              {...morph({ style: { float: 'right' } })}
+              src={butterfly}
+              width="50"
+            />
+          )}
+        </div>
+
+)}}
+
+</Playground>
+
+## Easings
+
+The valid CSS property keys are: `translateX`, `translateY`, `scaleX`, and `scaleY`.
+
+The value should be an easing function that **doesn't clamp** the values.
+
+React Morph provides some "safe" easing functions. You can import them like these:
+
+```js
+import { easeInSin, easeOutSin, easeIn, easeOut } from 'react-morph/easings';
+```
+
+### Fine-tuning
+
+Different ease functions will result in different curve shapes.
+Depending on the easing and spring values you might need to fine-tune other spring properties like `restDisplacementThreshold` or `overshootClamping`
+
+```js
+useMorph({
+  spring: {
+    restDisplacementThreshold: 0.0001,
+    overshootClamping: true,
+  },
+});
+```

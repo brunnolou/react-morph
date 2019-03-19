@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["es5", "es6", "es7", "es2017", "dom"],
+    "moduleResolution": "node",
+    "declaration": true,
+    "outDir": "./lib",
+		"jsx": "react",
+		"skipLibCheck": true,
+    "sourceMap": true,
+    "strict": false
+  },
+  "plugins": ["@typescript-eslint"],
+  "include": ["src/**/*"]
+}

@@ -1,54 +1,70 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect } from 'react';
 
-import morphTransition from "./morphTransition";
-import { getRect } from "./utils";
+import morphTransition from './morphTransition';
+import { getRect } from './util';
+import { MorphOptions } from './types';
+import { Spring } from 'wobble';
+import { linear } from '@popmotion/easing';
+
+type AnimateObject = {
+  from: HTMLElement;
+  to: HTMLElement;
+  rectFrom: CSSStyleDeclaration;
+  rectTo: CSSStyleDeclaration;
+  willBack?: boolean;
+};
 
 const defaultsOptions = {
   keepFrom: false,
-  type: "morph",
+  type: 'morph',
   getMargins: false,
   portalElement: document.body,
   spring: {
     damping: 26,
     mass: 1,
-    stiffness: 170
-  }
+    stiffness: 180,
+  },
+	easings: linear,
+	isReversed: false,
 };
 
-export default function useMorph(opts = defaultsOptions) {
+export default function useMorph(opts: MorphOptions = defaultsOptions) {
   const options = { ...defaultsOptions, ...opts };
   const {
     getMargins,
     keepFrom,
-    spring: { damping, mass, stiffness }
+    spring: { damping, mass, stiffness },
+    isReversed,
   } = options;
 
-  const backAnimationRef = useRef();
-  const prevToRef = useRef();
-  const prevToRectRef = useRef();
-  const prevSpringRef = useRef();
-  const cleanupFromRef = useRef();
+  const backAnimationRef = useRef() as React.MutableRefObject<AnimateObject>;
+  const prevToRef = useRef() as React.MutableRefObject<HTMLElement>;
+  const prevToRectRef = useRef() as React.MutableRefObject<CSSStyleDeclaration>;
+  const prevSpringRef = useRef() as React.MutableRefObject<Spring>;
+  const cleanupFromRef = useRef() as React.MutableRefObject<() => void>;
 
   let isAnimating = false;
-  let cleanup;
+  let cleanup: () => void;
 
   // Window on resize effect.
   useEffect(() => {
     if (!prevToRef.current) return;
 
     function resize() {
+      if (!prevToRef.current) return;
+      // @ts-ignore: Unreachable code error
       prevToRectRef.current = getRect(prevToRef.current, { getMargins });
     }
 
-    window.addEventListener("resize", resize);
+    window.addEventListener('resize', resize);
 
-    return () => window.removeEventListener("resize", resize);
+    return () => window.removeEventListener('resize', resize);
   }, []);
 
-  const animate = ({ from, to, rectFrom, rectTo, willBack }) => {
+  const animate = ({ from, to, rectFrom, rectTo, willBack }: AnimateObject) => {
     if (!to) return;
 
-    to.style.visibility = "visible";
+    to.style.visibility = 'visible';
 
     if (!from) return;
 
@@ -57,8 +73,8 @@ export default function useMorph(opts = defaultsOptions) {
     const prevSpring = prevSpringRef.current;
 
     switch (options.type) {
-      case "fade":
-      case "morph":
+      case 'fade':
+      case 'morph':
       default:
         cleanup = morphTransition({
           from,
@@ -77,7 +93,7 @@ export default function useMorph(opts = defaultsOptions) {
             prevSpringRef.current = s;
           },
           willBack,
-          options
+          options,
         });
 
         cleanupFromRef.current = cleanup;
@@ -117,28 +133,42 @@ export default function useMorph(opts = defaultsOptions) {
       const rectFrom = prevToRectRef.current;
       const rectTo = getRect(to, { getMargins });
 
-      animate({ from, rectFrom, to, rectTo, willBack });
+      animate({
+        from,
+        rectFrom,
+        to,
+        rectTo,
+        willBack,
+      });
 
       backAnimationRef.current = {
         from: to,
         rectFrom: rectTo,
         to: from,
-        rectTo: rectFrom
+        rectTo: rectFrom,
       };
 
       if (!willBack) {
-				console.log('willBack: ', willBack);
         prevToRef.current = to;
         prevToRectRef.current = rectTo;
       }
     },
-    [keepFrom, damping, mass, stiffness]
+    [keepFrom, damping, mass, stiffness, isReversed],
   );
+
+  const style: React.CSSProperties = { visibility: 'hidden' };
 
   const props = {
     ref: getRef,
-    style: { visibility: "hidden" }
+    style,
   };
 
-  return props;
+  const propsFn = ({ style = {}, ...extra } = {}) => {
+    return { ...props, style: { ...props.style, ...style } };
+  };
+
+  propsFn.ref = getRef;
+  propsFn.style = style;
+
+  return propsFn;
 }
