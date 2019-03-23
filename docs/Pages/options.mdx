@@ -1,0 +1,47 @@
+---
+name: Options
+route: /options
+---
+
+# Options
+
+## Default options
+
+```js
+{
+  keepFrom: false,
+  type: 'morph',
+  getMargins: false,
+  portalElement: document.body,
+  spring: {
+    damping: 26,
+    mass: 1,
+    stiffness: 180,
+  },
+  easings: linear // OR: { translateX: easeOutSin, translateY: easeInSin },
+  isReversed: false,
+}
+```
+
+## Spring
+
+```js
+{
+	// The spring stiffness coefficient.
+	stiffness?: number;
+	// Defines how the spring’s motion should be damped due to the forces of friction.
+	damping?: number;
+	// The mass of the object attached to the end of the spring.
+	mass?: number;
+	// Whether or not the spring allows "overdamping" (a damping ratio > 1). Defaults to false.
+	allowsOverdamping?: boolean;
+	// False when overshooting is allowed, true when it is not. Defaults to false.
+	overshootClamping?: boolean;
+	// When spring's velocity is below `restVelocityThreshold`, it is at rest. Defaults to .001.
+	restVelocityThreshold?: number;
+	// When the spring's displacement (current value) is below `restDisplacementThreshold`, it is at rest. Defaults to .001.
+	restDisplacementThreshold?: number;
+}
+```
+
+Spring physics values from [wobble](https://github.com/skevy/wobble#configuration) micro-library.

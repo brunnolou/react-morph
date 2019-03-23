@@ -1,0 +1,52 @@
+---
+name: Progress
+route: /advanced/progress
+menu: Advanced
+---
+
+import { Playground } from 'docz';
+import { useState } from 'react';
+import { useMorph } from '../../../src/index';
+import { butterfly, larva } from '../../images';
+
+# Controling progress
+
+<Playground>
+  {() => {
+	  // Handle toggle state as you normally would.
+			  const [toggle, setToggle] = useState(true)
+	  const [progress, setProgress] = useState(0)
+
+      const morph = useMorph({ progress: Number(progress / 100) });
+
+      return (
+        <div>
+
+  				<div>
+          <button onClick={() => {setToggle(!toggle); setProgress(progress)}}>Let's morph!</button>
+					<br />
+
+  				<input
+            type="range"
+            value={progress}
+            onChange={({ target: { value } }) => setProgress(value)}
+            step="0.01"
+
+          />
+          {progress}%
+        </div>
+
+
+          {toggle && <img key="one" {...morph} src={larva} width="30" />}
+
+  				<br />
+  				<br />
+  				<br />
+          {!toggle && <img key="two" {...morph} src={ butterfly} width="80" />}
+        </div>
+      )
+    }
+
+}
+
+</Playground>

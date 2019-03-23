@@ -1,0 +1,71 @@
+---
+name: Fades
+route: /getting-started/fade
+menu: Getting Started
+---
+
+import { Playground } from 'docz';
+import { useState } from 'react';
+import { useFade } from '../../../src/index';
+import { butterfly, larva } from '../../images';
+
+# Fade in Fade out
+
+## Intro
+
+When creating complex morph animation some elements can simply fade in or fade out.
+This would make more pleasent animations since there will be less cognitive load to
+process all the movements.
+
+Import the `useFade` hook.
+
+```js
+import { useFade } from 'react-morph';
+```
+
+Call the hook in you function component.
+
+```js
+const fade = useFade(options);
+```
+
+Then spread the props to the elements you want to fade.
+
+```jsx
+<img {...fade} src="larva.png" width="50">
+```
+
+The option `isInitial` is used to disable the initial fade in.
+
+```js
+useFade({ isInitial: toggle }),
+```
+
+## Simple fade
+
+<Playground>
+  {() => {
+	  // Handle toggle state as you normally would.
+	  const [toggle, setToggle] = useState(false)
+		const spring = { damping: 5, mass: 1, stiffness: 3 };
+    const fadeIn = useFade({ isInitial: toggle });
+    const fadeOut = useFade({ isInitial: !toggle });
+
+    return (
+      <div>
+        <button onClick={() => setToggle(!toggle)}>Let's fade!</button>
+
+    			<br />
+
+          {toggle ? (
+            <img key="one" {...fadeIn} src={larva} width="80"  style={{ float: 'left'}}/>
+          ) : (
+            <img key="two" {...fadeOut} src={butterfly} width="80" style={{ float: 'right'}} />
+          )}
+      </div>
+    )
+
+}
+}
+
+</Playground>

@@ -24,8 +24,8 @@ const defaultsOptions = {
     mass: 1,
     stiffness: 180,
   },
-	easings: linear,
-	isReversed: false,
+  easings: linear,
+  isReversed: false,
 };
 
 export default function useMorph(opts: MorphOptions = defaultsOptions) {
@@ -42,23 +42,25 @@ export default function useMorph(opts: MorphOptions = defaultsOptions) {
   const prevToRectRef = useRef() as React.MutableRefObject<CSSStyleDeclaration>;
   const prevSpringRef = useRef() as React.MutableRefObject<Spring>;
   const cleanupFromRef = useRef() as React.MutableRefObject<() => void>;
+  const setProgressRef = useRef() as React.MutableRefObject<
+    (progress: number) => void
+  >;
 
   let isAnimating = false;
   let cleanup: () => void;
+
+  function onResize() {
+    if (!prevToRef.current) return;
+    prevToRectRef.current = getRect(prevToRef.current, { getMargins });
+  }
 
   // Window on resize effect.
   useEffect(() => {
     if (!prevToRef.current) return;
 
-    function resize() {
-      if (!prevToRef.current) return;
-      // @ts-ignore: Unreachable code error
-      prevToRectRef.current = getRect(prevToRef.current, { getMargins });
-    }
+    window.addEventListener('resize', onResize);
 
-    window.addEventListener('resize', resize);
-
-    return () => window.removeEventListener('resize', resize);
+    return () => window.removeEventListener('resize', onResize);
   }, []);
 
   const animate = ({ from, to, rectFrom, rectTo, willBack }: AnimateObject) => {
@@ -76,7 +78,7 @@ export default function useMorph(opts: MorphOptions = defaultsOptions) {
       case 'fade':
       case 'morph':
       default:
-        cleanup = morphTransition({
+        const morph = morphTransition({
           from,
           to,
           rectFrom,
@@ -96,6 +98,9 @@ export default function useMorph(opts: MorphOptions = defaultsOptions) {
           options,
         });
 
+        cleanup = morph.cleanup;
+        setProgressRef.current = morph.setProgress;
+
         cleanupFromRef.current = cleanup;
     }
 
@@ -103,6 +108,11 @@ export default function useMorph(opts: MorphOptions = defaultsOptions) {
       if (isAnimating) cleanup();
     };
   };
+
+  useEffect(() => {
+    if (!setProgressRef.current) return;
+    setProgressRef.current(options.progress);
+  }, [options.progress]);
 
   const getRef = useCallback(
     to => {
@@ -163,9 +173,10 @@ export default function useMorph(opts: MorphOptions = defaultsOptions) {
     style,
   };
 
-  const propsFn = ({ style = {}, ...extra } = {}) => {
-    return { ...props, style: { ...props.style, ...style } };
-  };
+  const propsFn = ({ style = {}, ...extra } = {}) => ({
+    ...props,
+    style: { ...props.style, ...style },
+  });
 
   propsFn.ref = getRef;
   propsFn.style = style;

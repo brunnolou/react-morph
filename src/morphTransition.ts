@@ -19,7 +19,7 @@ const resetTranslate = {
   scaleY: 1,
 };
 
-const ease = cubicBezier(0.9, 0.9, 0.37, 0.98);
+const ease = cubicBezier(1, 0.26, 0.37, 0.98);
 const easeRev = reversed(ease);
 const easeInOut = cubicBezier(0.5, 0.5, 0, 1);
 
@@ -47,7 +47,7 @@ type Options = {
   options: MorphOptions;
 };
 
-export default function({
+export default function morphTransition({
   from,
   to,
   rectFrom,
@@ -92,33 +92,51 @@ export default function({
 
   let isDeleted = false;
 
+  const onProgress = (p: number) => {
+    switch (options.type) {
+      case 'fade':
+        toContainer.style.opacity = String(toFade(easeFast(p)));
+        fromContainer.style.opacity = String(fromFade(easeSlow(p)));
+        toContainer.style.transform = getTransformString(toFLIP(p));
+        fromContainer.style.transform = getTransformString(fromFLIP(p));
+
+        break;
+      case 'morph':
+      default:
+        toContainer.style.opacity = String(toFade(ease(p)));
+        fromContainer.style.opacity = String(fromFade(easeRev(p)));
+        toContainer.style.transform = getTransformString(toFLIP(p));
+        fromContainer.style.transform = getTransformString(fromFLIP(p));
+    }
+  };
+
   spring
     .onStart(onStart)
     .onUpdate(s => {
       const p = s.currentValue;
-
-      switch (options.type) {
-        case 'fade':
-          toContainer.style.opacity = String(toFade(easeFast(p)));
-          fromContainer.style.opacity = String(fromFade(easeSlow(p)));
-          toContainer.style.transform = getTransformString(toFLIP(p));
-          fromContainer.style.transform = getTransformString(fromFLIP(p));
-
-          break;
-        case 'morph':
-        default:
-          toContainer.style.opacity = String(toFade(ease(p)));
-          fromContainer.style.opacity = String(fromFade(easeRev(p)));
-          toContainer.style.transform = getTransformString(toFLIP(p));
-          fromContainer.style.transform = getTransformString(fromFLIP(p));
-      }
+      onProgress(p);
       onUpdate(s);
     })
     .onStop(s => {
-      onStop(s);
-      cleanup();
-    })
-    .start();
+      if (s.currentValue === 0 || s.currentValue === 1) {
+        onStop(s);
+        cleanup();
+      }
+    });
+
+  if (typeof options.progress === 'undefined') {
+    spring.start();
+  } else {
+    onProgress(options.progress);
+  }
+
+  const setProgress = (progress: number) => {
+    onProgress(progress);
+    if (progress === 0 || progress === 1) {
+      onStop(null);
+      // cleanup();
+    }
+  };
 
   const cleanup = () => {
     if (isDeleted) return;
@@ -137,5 +155,5 @@ export default function({
     isDeleted = true;
   };
 
-  return cleanup;
+  return { cleanup, setProgress };
 }

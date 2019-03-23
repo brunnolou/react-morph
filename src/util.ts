@@ -1,5 +1,5 @@
-import { MorphOptions, NumberObject, Easings } from './types';
-import { linear, reversed, Easing } from '@popmotion/easing';
+import { MorphOptions, NumberObject, Easing } from './types';
+import { createReversed, linear } from './easings';
 
 const px = (x: number) => `${x}px`;
 
@@ -10,7 +10,8 @@ export const getRects = (node: HTMLElement) => {
 
 export const applyOverlayStyle = (node: HTMLElement, styles = {}) => {
   Object.assign(node.style, {
-    position: 'absolute',
+		position: 'absolute',
+		// border: '2px solid red',
     'transform-origin': 'top left',
     ...styles,
   });
@@ -83,7 +84,7 @@ export const interpolateObject = (
   { easings = linear, isReversed }: MorphOptions,
 ) => (t: number) => ({
   ...Object.keys(from).reduce((acc, key) => {
-    const shouldRev = isReversed ? reversed : (x: Easing) => x;
+    const shouldRev = isReversed ? createReversed : (x: Easing) => x;
     const easeFn = shouldRev(
       typeof easings === 'function' ? easings : easings[key] || linear,
     );

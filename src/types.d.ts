@@ -3,6 +3,7 @@ import { Easing } from '@popmotion/easing';
 export type NumberObject = { [key: string]: number };
 export type EaseObject = { [key: string]: Easing };
 export type Easings = EaseObject | Easing;
+export type Easing = (v: number) => number;
 
 export interface SpringConfig {
   stiffness?: number; // The spring stiffness coefficient.
@@ -22,5 +23,6 @@ export interface MorphOptions {
   zIndex?: number;
   spring?: SpringConfig;
   isReversed?: boolean;
-  easings?: Easings;
+	easings?: Easings;
+	progress?: number,
 }
