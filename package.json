@@ -24,7 +24,7 @@
   "homepage": "https://brunnolou.github.io/react-morph",
   "dependencies": {
     "keyframe": "^2.1.0",
-    "popmotion": "^8.3.3",
+    "popmotion": "^8.6.4",
     "prop-types": "^15.6.0",
     "raf": "^3.4.0",
     "react": "^16.2.0",

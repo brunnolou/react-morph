@@ -3,13 +3,11 @@ import propTypes from 'prop-types';
 import keyframe from 'keyframe';
 import raf from 'raf';
 import css from 'stylefire/css';
-import { linear } from 'popmotion/lib/easing';
-import keyframes from 'popmotion/lib/animations/keyframes';
-import spring from 'popmotion/lib/animations/spring';
-import tween from 'popmotion/lib/animations/tween';
-import value from 'popmotion/lib/reactions/value';
-import { pipe } from 'popmotion/lib/transformers';
+import { keyframes, spring, tween, value, transform, easing } from 'popmotion';
 import { interpolateObject } from './util';
+
+const { linear } = easing;
+const { pipe } = transform;
 
 const getBox = (elm, { getMargins = false } = {}) => {
   const box = elm.getBoundingClientRect();
