@@ -35,21 +35,15 @@ Then spread the props to the elements you want to fade.
 <img {...fade} src="larva.png" width="50">
 ```
 
-The option `isInitial` is used to disable the initial fade in.
-
-```js
-useFade({ isInitial: toggle }),
-```
-
 ## Simple fade
 
 <Playground>
   {() => {
 	  // Handle toggle state as you normally would.
 	  const [toggle, setToggle] = useState(false)
-		const spring = { damping: 5, mass: 1, stiffness: 3 };
-    const fadeIn = useFade({ isInitial: toggle });
-    const fadeOut = useFade({ isInitial: !toggle });
+		const spring = { damping: 5, stiffness: 10 };
+    const fadeIn = useFade({ spring, isInitial: toggle, delaysRatio: 1 });
+    const fadeOut = useFade({ spring, isInitial: !toggle });
 
     return (
       <div>
@@ -63,9 +57,26 @@ useFade({ isInitial: toggle }),
             <img key="two" {...fadeOut} src={butterfly} width="80" style={{ float: 'right'}} />
           )}
       </div>
-    )
-
-}
-}
+    )}}
 
 </Playground>
+
+## Disable initial fade
+
+Usually when you create a complex morph with some fades, we just want to fade in/out when toggle.
+In order to disable the initial fade in on page load you can toggle the option `isInitial`.
+
+```js
+useFade({ isInitial: toggle });
+```
+
+## Delay
+
+By default `useFade` delays the fade in and speeds up the fade out.
+This is expecially useful to use with `useMorph`.
+
+To update this behaviour you can set the option `delaysRatio`.
+The default value is `0.1`. To disable the delay set `delaysRatio` to `1`.
+
+> **Warning: **
+> Don't use the same fade twice!

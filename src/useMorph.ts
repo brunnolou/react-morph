@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect, useLayoutEffect } from 'react';
 
 import morphTransition from './morphTransition';
 import { getRect } from './util';
@@ -49,7 +49,7 @@ export default function useMorph(opts: MorphOptions = defaultsOptions) {
   let isAnimating = false;
   let cleanup: () => void;
 
-  function onResize() {
+  function resize() {
     if (!prevToRef.current) return;
     prevToRectRef.current = getRect(prevToRef.current, { getMargins });
   }
@@ -58,9 +58,9 @@ export default function useMorph(opts: MorphOptions = defaultsOptions) {
   useEffect(() => {
     if (!prevToRef.current) return;
 
-    window.addEventListener('resize', onResize);
+    window.addEventListener('resize', resize);
 
-    return () => window.removeEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', resize);
   }, []);
 
   const animate = ({ from, to, rectFrom, rectTo, willBack }: AnimateObject) => {
@@ -143,13 +143,7 @@ export default function useMorph(opts: MorphOptions = defaultsOptions) {
       const rectFrom = prevToRectRef.current;
       const rectTo = getRect(to, { getMargins });
 
-      animate({
-        from,
-        rectFrom,
-        to,
-        rectTo,
-        willBack,
-      });
+      animate({ from, rectFrom, to, rectTo, willBack });
 
       backAnimationRef.current = {
         from: to,
@@ -180,6 +174,10 @@ export default function useMorph(opts: MorphOptions = defaultsOptions) {
 
   propsFn.ref = getRef;
   propsFn.style = style;
+
+  if (options.withMethods) {
+    return [propsFn, { resize }];
+  }
 
   return propsFn;
 }

@@ -23,6 +23,9 @@ export interface MorphOptions {
   zIndex?: number;
   spring?: SpringConfig;
   isReversed?: boolean;
-	easings?: Easings;
-	progress?: number,
+  easings?: Easings;
+  progress?: number;
+}
+export interface FadeOptions extends MorphOptions {
+  isInitial?: boolean;
 }

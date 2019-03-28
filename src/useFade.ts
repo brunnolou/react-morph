@@ -2,9 +2,10 @@ import { useRef, useCallback, useEffect } from 'react';
 
 import morphTransition from './morphTransition';
 import { getRect, cloneElement, applyOverlayStyle } from './util';
-import { MorphOptions } from './types';
+import { FadeOptions } from './types';
 import { Spring } from 'wobble';
-import { linear } from '@popmotion/easing';
+import { linear, easeOut, easeInOut } from '@popmotion/easing';
+import { clamp, interpolate } from '@popmotion/popcorn';
 
 const defaultsOptions = {
   keepFrom: false,
@@ -18,17 +19,17 @@ const defaultsOptions = {
     overshootClamping: true,
   },
   easings: linear,
+  delaysRatio: 0.1,
   isInitial: false,
 };
 
-export default function useFade(opts: MorphOptions = defaultsOptions) {
+export default function useFade(opts: FadeOptions = defaultsOptions) {
   const options = { ...defaultsOptions, ...opts };
-  const { getMargins, isInitial } = options;
+  const { getMargins, isInitial, delaysRatio } = options;
 
   const prevNodeRef = useRef() as React.MutableRefObject<HTMLElement>;
   const cloneContainerRef = useRef() as React.MutableRefObject<HTMLElement>;
   const isMountedRef = useRef() as React.MutableRefObject<boolean>;
-
 
   const cleanup = () => {
     if (!cloneContainerRef.current) return;
@@ -36,6 +37,12 @@ export default function useFade(opts: MorphOptions = defaultsOptions) {
     options.portalElement.removeChild(cloneContainerRef.current);
     cloneContainerRef.current = null;
   };
+
+  const halfClampEnd = clamp(1 - delaysRatio, 1);
+  const easeFast = (x: number) =>
+    easeInOut(
+      Number(interpolate([1 - delaysRatio, 1], [0, 1])(halfClampEnd(x))),
+    );
 
   const spring = new Spring({
     fromValue: Number(isInitial),
@@ -45,10 +52,13 @@ export default function useFade(opts: MorphOptions = defaultsOptions) {
 
   spring
     .onUpdate(s => {
-      if (!cloneContainerRef.current) return;
-      cloneContainerRef.current.style.opacity = String(s.currentValue);
+			if (!cloneContainerRef.current) return;
+
+      cloneContainerRef.current.style.opacity = String(
+        easeFast(s.currentValue),
+      );
     })
-    .onStop(() => cleanup());
+    .onStop(cleanup);
 
   const getRef = useCallback(n => {
     const node = n || prevNodeRef.current;
@@ -65,7 +75,10 @@ export default function useFade(opts: MorphOptions = defaultsOptions) {
 
       prevNodeRef.current = node;
 
-      applyOverlayStyle(cloneContainerRef.current, rect);
+      applyOverlayStyle(cloneContainerRef.current, {
+        ...rect,
+        // border: '2px solid red',
+      });
     }
 
     const toValue = Number(!!n);
@@ -73,7 +86,7 @@ export default function useFade(opts: MorphOptions = defaultsOptions) {
     if (spring.currentValue === toValue) cleanup();
 
     spring.updateConfig({ toValue }).start();
-	}, []);
+  }, []);
 
   isMountedRef.current = true;
 

@@ -25,10 +25,10 @@ html {
 
 .body {
   background-image: linear-gradient(#ced8dd, #9bb1c1);
-	color: #666;
-	width: 100%;
-	min-height: 700px;
-	padding: 3rem;
+  color: #666;
+  width: 100%;
+  min-height: 700px;
+  padding: 3rem;
 }
 
 p {
@@ -112,7 +112,7 @@ p {
 }
 
 .details {
-	position: relative;
+  position: relative;
   top: 0;
   z-index: 1;
   display: flex;
@@ -135,9 +135,13 @@ p {
 .details-title {
   z-index: 3;
   display: block;
-  text-align: center;
-  margin-top: -4rem;
-  margin-bottom: 1rem;
+	text-align: center;
+	font-weight: 100;
+  margin-top: -6rem;
+}
+
+.title-large {
+	font-size: 50px;
 }
 
 .details-content {
@@ -167,7 +171,7 @@ p {
 
 .users {
   display: flex;
-  margin: 1rem -2rem -1rem;
+  margin: 1rem -3rem -1rem;
   padding: 1rem 2rem 0;
 }
 
@@ -190,7 +194,6 @@ p {
   display: block;
   width: 2rem;
   height: 2rem;
-  margin-bottom: 0.5rem;
   border-radius: 2rem;
   box-shadow: 0 2px 5px -2px rgba(0, 0, 0, 0.9);
 }
@@ -198,11 +201,13 @@ p {
 .users-image--lg {
   width: 4rem;
   height: 4rem;
-  margin: 1rem;
 }
 
 .p1 {
   padding: 1rem;
+}
+.m1 {
+  margin: 1rem;
 }
 
 .t-center {

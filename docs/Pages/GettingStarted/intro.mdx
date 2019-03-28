@@ -1,6 +1,6 @@
 ---
 name: Intro
-route: /getting-started/intro
+route: /
 menu: Getting Started
 ---
 
@@ -9,9 +9,11 @@ import { useState } from 'react';
 import { useMorph } from '../../../src/index';
 import { butterfly, larva } from '../../images';
 
-# Getting Started
+# React Morph ️🦋
 
-## Intro
+#### Morphing UI transitions made simple
+
+## Getting Started
 
 Import the `useMorph` hook.
 
@@ -37,9 +39,7 @@ Then spread the props to the elements you want to morph.
 
 You should handle the state as you normally would.
 
-Make sure you have just **one element redered at same time**.
-
-## Demo
+> Make sure you have just **ONE element redered at same time**.
 
 <Playground>
   {() => {
@@ -50,16 +50,30 @@ Make sure you have just **one element redered at same time**.
       return (
         <div>
           <button onClick={() => setToggle(!toggle)}>Let's morph!</button>
-					<br />
-          {toggle && <img key="one" {...morph} src={larva} width="30" />}
+
+  				<br />
+          {toggle && <img key="one" {...morph} src={larva} width="30" height="30" />}
   				<br />
   				<br />
   				<br />
-          {!toggle && <img key="two" {...morph} src={ butterfly} width="80" />}
+          {!toggle && <img key="two" {...morph} src={ butterfly} width="80" height="80" style={{ float: 'right' }} />}
         </div>
       )
     }
-
 }
-
 </Playground>
+
+## Controling the state
+
+React morph doesn't handle the state for you. There is no play or stop method.
+
+Also, it won't hide or show the elements for you. It's up to you how you wanna handle it.
+
+The animation will be triggered as soon as the new element with the same `{...morph}` enters the DOM.
+
+That's why you cannot have the two state elements at the same time.
+
+## Styling
+
+You can style your components however you like.
+You can use inline styles, class names or a CSS-in-JS solution like Styled Components.

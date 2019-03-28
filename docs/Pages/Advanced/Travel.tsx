@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import './travel.css';
 import { useMorph, useMultiMorph, useFade } from '../../../src/index';
-import { createEaseIn } from '../../../src/easings';
+import { createEaseIn, easeOut } from '../../../src/easings';
+import { Spring } from 'wobble';
+import presets from '../../../src/presets';
 
-const strongerEase = createEaseIn(3);
+const strongerEase = createEaseIn(2);
 
 const faces = [
   {
@@ -24,25 +26,26 @@ const faces = [
   },
 ];
 
-const spring = {
-  damping: 5,
-  mass: 1,
-  stiffness: 3,
-};
+const spring = presets.gentle;
 
 const Travel = () => {
   const [toggle, go] = useState(false);
-  const fade = useFade({ isReversed: toggle, spring, zIndex: 4 });
   const contentPlaceholderMorph = useMorph({
-    spring, zIndex: 1,
+    spring,
+    zIndex: 1,
+    isReversed: !toggle,
     easings: strongerEase,
   });
   const coverMorph = useMorph({ spring, zIndex: 2 });
-  const sepMorph = useMorph({ spring, zIndex: 3 });
+  const sepFade = useFade({ spring, isInitial: true, zIndex: 4 });
   const titleMorph = useMorph({ spring, zIndex: 4 });
   const leftMorph = useMorph({ spring, zIndex: 4 });
   const rightMorph = useMorph({ spring, zIndex: 4 });
-  const facesMorphs = useMultiMorph(faces, { spring, zIndex: 3, getMargins: true });
+  const facesMorphs = useMultiMorph(faces, {
+    spring,
+    zIndex: 3,
+  });
+  const facesFades = faces.map(() => useFade({ spring, zIndex: 4 }));
 
   return (
     <div className="container">
@@ -80,9 +83,11 @@ const Travel = () => {
           />
           <div />
           <div className="p1">
-            <p className="separator t-left" {...sepMorph}>
-              Panorama Grossmünster limmat river
-            </p>
+            <div {...sepFade}>
+              <p className="separator t-left">
+                Panorama Grossmünster limmat river
+              </p>
+            </div>
 
             <ul className="users">
               {faces.map(({ src, username }, index) => (
@@ -112,11 +117,15 @@ const Travel = () => {
 
           <div className="details-title">
             <div className="details-toolbar card-footer">
-              <small {...leftMorph}>Grossmünster</small>
-              <small {...rightMorph}>47.3769° N, 8.5417° E</small>
+              <small className="c-white" {...leftMorph}>
+                Grossmünster
+              </small>
+              <small className="c-white" {...rightMorph}>
+                47.3769° N, 8.5417° E
+              </small>
             </div>
 
-            <h1 className="card-title" {...titleMorph}>
+            <h1 className="card-title title-large" {...titleMorph}>
               Zurich
             </h1>
           </div>
@@ -126,21 +135,22 @@ const Travel = () => {
               className="details-content-placeholder"
               {...contentPlaceholderMorph}
             />
-            <div className="center l-flex">
-              <span {...sepMorph}> </span>
-            </div>
 
             <ul>
               {faces.map(({ src, username }, index) => (
                 <li className="users-item" key={`details-${username}`}>
-                  <img
-                    className="users-image users-image--lg"
-                    src={src}
-                    alt={username}
-                    {...facesMorphs[index]}
-                  />
+                  <div className="m1">
+                    <img
+                      className="users-image users-image--lg"
+                      src={src}
+                      alt={username}
+                      {...facesMorphs[index]}
+                    />
+                  </div>
 
-                  <span {...fade}>{username}</span>
+                  <span key={`user-${username}`} {...facesFades[index]}>
+                    {username}
+                  </span>
                 </li>
               ))}
             </ul>

@@ -10,8 +10,8 @@ export const getRects = (node: HTMLElement) => {
 
 export const applyOverlayStyle = (node: HTMLElement, styles = {}) => {
   Object.assign(node.style, {
-		position: 'absolute',
-		// border: '2px solid red',
+    position: 'absolute',
+    // border: '2px solid red',
     'transform-origin': 'top left',
     ...styles,
   });

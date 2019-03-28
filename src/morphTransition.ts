@@ -19,19 +19,19 @@ const resetTranslate = {
   scaleY: 1,
 };
 
-const ease = cubicBezier(1, 0.26, 0.37, 0.98);
+const ease = cubicBezier(0.9, 0.9, 0.37, 0.98);
 const easeRev = reversed(ease);
 const easeInOut = cubicBezier(0.5, 0.5, 0, 1);
 
-const fadeDistance = 0.1;
-const halfClampEnd = clamp(1 - fadeDistance, 1);
-const halfClampStart = clamp(0, fadeDistance);
+const delaysRatio = 0.1;
+const halfClampEnd = clamp(1 - delaysRatio, 1);
+const halfClampStart = clamp(0, delaysRatio);
 const easeFast = (x: number) =>
   easeInOut(
-    Number(interpolate([1 - fadeDistance, 1], [0, 1])(halfClampEnd(x))),
+    Number(interpolate([1 - delaysRatio, 1], [0, 1])(halfClampEnd(x))),
   );
 const easeSlow = (x: number) =>
-  easeInOut(Number(interpolate([0, fadeDistance], [0, 1])(halfClampStart(x))));
+  easeInOut(Number(interpolate([0, delaysRatio], [0, 1])(halfClampStart(x))));
 
 type Options = {
   from: HTMLElement;
@@ -94,13 +94,6 @@ export default function morphTransition({
 
   const onProgress = (p: number) => {
     switch (options.type) {
-      case 'fade':
-        toContainer.style.opacity = String(toFade(easeFast(p)));
-        fromContainer.style.opacity = String(fromFade(easeSlow(p)));
-        toContainer.style.transform = getTransformString(toFLIP(p));
-        fromContainer.style.transform = getTransformString(fromFLIP(p));
-
-        break;
       case 'morph':
       default:
         toContainer.style.opacity = String(toFade(ease(p)));

@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, useLayoutEffect } from "react";
 
 import morphTransition from "./morphTransition";
 import { getRect } from "./utils";
@@ -43,7 +43,7 @@ export default function useMorph(opts = defaultsOptions) {
     window.addEventListener("resize", resize);
 
     return () => window.removeEventListener("resize", resize);
-  }, []);
+	}, []);
 
   const animate = ({ from, to, rectFrom, rectTo, willBack }) => {
     if (!to) return;
@@ -137,7 +137,7 @@ export default function useMorph(opts = defaultsOptions) {
 
   const props = {
     ref: getRef,
-    style: { visibility: "hidden" }
+    style: { visibility: "hidden", willChange: 'transform; opacity' }
   };
 
   return props;
