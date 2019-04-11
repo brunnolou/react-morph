@@ -25,6 +25,7 @@ export interface MorphOptions {
   isReversed?: boolean;
   easings?: Easings;
   progress?: number;
+  withMethods?: boolean;
 }
 export interface FadeOptions extends MorphOptions {
   isInitial?: boolean;

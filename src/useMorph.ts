@@ -5,6 +5,7 @@ import { getRect } from './util';
 import { MorphOptions } from './types';
 import { Spring } from 'wobble';
 import { linear } from '@popmotion/easing';
+const globalAny: any = global;
 
 type AnimateObject = {
   from: HTMLElement;
@@ -18,7 +19,7 @@ const defaultsOptions = {
   keepFrom: false,
   type: 'morph',
   getMargins: false,
-  portalElement: document.body,
+  portalElement: globalAny.document && document.body,
   spring: {
     damping: 26,
     mass: 1,
@@ -26,6 +27,7 @@ const defaultsOptions = {
   },
   easings: linear,
   isReversed: false,
+  withMethods: false,
 };
 
 export default function useMorph(opts: MorphOptions = defaultsOptions) {
