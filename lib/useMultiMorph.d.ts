@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { MorphOptions } from './types';
-export default function useMorph(opts?: MorphOptions): {
+declare const useMultiMorph: (list: any[], options?: MorphOptions) => ({
     ({ style, ...extra }?: {
         style?: {};
     }): {
@@ -1498,4 +1498,5 @@ export default function useMorph(opts?: MorphOptions): {
     style: import("react").CSSProperties;
 } | {
     resize: () => void;
-})[];
+})[])[];
+export default useMultiMorph;

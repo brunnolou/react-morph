@@ -13,5 +13,8 @@ declare type Options = {
     willBack?: boolean;
     options: MorphOptions;
 };
-export default function ({ from, to, rectFrom, rectTo, fromValue, initialVelocity, onUpdate, onStart, onStop, willBack, options, }: Options): () => void;
+export default function morphTransition({ from, to, rectFrom, rectTo, fromValue, initialVelocity, onUpdate, onStart, onStop, willBack, options, }: Options): {
+    cleanup: () => void;
+    setProgress: (progress: number) => void;
+};
 export {};
