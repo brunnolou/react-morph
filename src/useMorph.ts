@@ -1,10 +1,11 @@
 import { useRef, useCallback, useEffect, useLayoutEffect } from 'react';
+import { Spring } from 'wobble';
+import { linear } from '@popmotion/easing';
 
 import morphTransition from './morphTransition';
 import { getRect } from './util';
 import { MorphOptions } from './types';
-import { Spring } from 'wobble';
-import { linear } from '@popmotion/easing';
+
 const globalAny: any = global;
 
 type AnimateObject = {
@@ -19,7 +20,7 @@ const defaultsOptions = {
   keepFrom: false,
   type: 'morph',
   getMargins: false,
-  portalElement: globalAny.document && document.body,
+  portalElement: globalAny.document && globalAny.document.body,
   spring: {
     damping: 26,
     mass: 1,

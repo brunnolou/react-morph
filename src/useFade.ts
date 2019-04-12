@@ -1,17 +1,18 @@
 import { useRef, useCallback, useEffect } from 'react';
+import { Spring } from 'wobble';
 
-import morphTransition from './morphTransition';
 import { getRect, cloneElement, applyOverlayStyle } from './util';
 import { FadeOptions } from './types';
-import { Spring } from 'wobble';
 import { linear, easeOut, easeInOut } from '@popmotion/easing';
 import { clamp, interpolate } from '@popmotion/popcorn';
+
+const globalAny: any = global;
 
 const defaultsOptions = {
   keepFrom: false,
   type: 'morph',
   getMargins: false,
-  portalElement: document.body,
+  portalElement: globalAny.document && globalAny.document.body,
   spring: {
     damping: 26,
     mass: 1,
