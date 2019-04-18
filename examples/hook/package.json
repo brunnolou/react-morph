@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@popmotion/popcorn": "^0.1.0",
-    "module-alias": "^2.2.0",
     "react": "16.7.0-alpha.0 - next",
     "react-dom": "16.7.0-alpha.0 - next",
     "react-router-dom": "^4.3.1",
@@ -12,6 +11,7 @@
     "wobble": "1.5.0"
   },
   "scripts": {
+		"postinstall": "./postinstall.sh",
     "start": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -29,9 +29,6 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "_moduleAliases": {
-    "@useMorph": "../../lib/useMorph.js"
-  },
   "devDependencies": {
     "eslint-plugin-react-hooks": "0.0.0"
   }

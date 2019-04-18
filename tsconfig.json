@@ -13,5 +13,5 @@
     "strict": false
   },
   "plugins": ["@typescript-eslint"],
-  "include": ["src/**/*"]
+  "include": ["src/*"]
 }

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import './travel.css';
-import { useMorph, useMultiMorph, useFade } from '../../../src/index';
-import { createEaseIn, easeOut } from '../../../src/easings';
-import { Spring } from 'wobble';
-import presets from '../../../src/presets';
+import { useMorph, useMorphs, useFade } from 'react-morph/';
+import { createEaseIn } from 'react-morph/easings';
+import presets from 'react-morph/presets';
 
 const strongerEase = createEaseIn(2);
 
@@ -26,7 +25,7 @@ const faces = [
   },
 ];
 
-const spring = presets.gentle;
+const spring = presets.noWobble;
 
 const Travel = () => {
   const [toggle, go] = useState(false);
@@ -37,15 +36,14 @@ const Travel = () => {
     easings: strongerEase,
   });
   const coverMorph = useMorph({ spring, zIndex: 2 });
-  const sepFade = useFade({ spring, isInitial: true, zIndex: 4 });
+  const sepFade = useFade({ spring, isInitial: !toggle, zIndex: 4 });
   const titleMorph = useMorph({ spring, zIndex: 4 });
   const leftMorph = useMorph({ spring, zIndex: 4 });
   const rightMorph = useMorph({ spring, zIndex: 4 });
-  const facesMorphs = useMultiMorph(faces, {
-    spring,
-    zIndex: 3,
-  });
-  const facesFades = faces.map(() => useFade({ spring, zIndex: 4 }));
+  const facesMorphs = useMorphs(faces, { spring, zIndex: 3 });
+  const facesFades = faces.map(() =>
+    useFade({ spring, isInitial: toggle, zIndex: 4 }),
+  );
 
   return (
     <div className="container">

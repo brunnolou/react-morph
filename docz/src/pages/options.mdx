@@ -12,14 +12,14 @@ route: /options
   keepFrom: false,
   type: 'morph',
   getMargins: false,
-  portalElement: document.body,
+  portalElement: document.body, // Where cloned elements will be placed.
   spring: {
     damping: 26,
     mass: 1,
     stiffness: 180,
   },
   easings: linear // OR: { translateX: easeOutSin, translateY: easeInSin },
-  isReversed: false,
+  isReversed: false, // Used for reversing the easings curves.
 }
 ```
 

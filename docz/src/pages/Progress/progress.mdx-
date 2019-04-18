@@ -6,7 +6,7 @@ menu: Advanced
 
 import { Playground } from 'docz';
 import { useState } from 'react';
-import { useMorph } from '../../../src/index';
+import { useMorph } from 'react-morph/';
 import { butterfly, larva } from '../../images';
 
 # Controling progress

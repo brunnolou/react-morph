@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
-import useMorph from "./useMorph";
-import { useMultiMorph } from "./createMorphed/useMultiMorph";
+// import useMorph from "./useMorph";
+import { useMultiMorph } from "react-morph";
 const spring = {
   damping: 26,
   mass: 1,

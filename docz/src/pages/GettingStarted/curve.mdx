@@ -1,13 +1,13 @@
 ---
-name: Curves
-route: /getting-started/curves
+name: Curves & Easings
+route: /getting-started/curves-easings
 menu: Getting Started
 ---
 
 import { Playground } from 'docz';
 import { useState } from 'react';
-import { useMorph } from '../../../src/index';
-import { easeInSin, easeOutSin, easeIn, easeOut } from '../../../src/easings';
+import { useMorph } from 'react-morph/index';
+import { easeInSin, easeOutSin, easeIn, easeOut } from 'react-morph/easings';
 import { butterfly, larva } from '../../images';
 import {
   circIn,
@@ -17,7 +17,9 @@ import {
   createMirroredEasing,
 } from '@popmotion/easing';
 
-# Curves
+# Curves & Easings
+
+## Curves
 
 It's possible to create a curve instead of a linear translation between morph states.
 

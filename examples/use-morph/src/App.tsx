@@ -1,14 +1,13 @@
 import React, { Component, useState } from 'react';
 import logo from './logo.svg';
 import { useMorph } from 'react-morph';
-console.log('useMorph: ', useMorph);
 
 import './App.css';
 
 const spring = { damping: 26, mass: 1, stiffness: 170 };
 
 function Morph() {
-  const morph = useMorph();
+  const morph = useMorph({ spring });
   const [toggle, setToggle] = useState(false);
 
   return (

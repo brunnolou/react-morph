@@ -1,0 +1,39 @@
+---
+name: Player
+route: /demos/player
+menu: Demos
+---
+
+import { useState } from 'react';
+import { useMorph, useMorphKeys } from 'react-morph';
+import { Playground } from 'docz';
+import '../../utilities.css';
+import '../../../public/tailwind.min.css';
+import PlayerFull from './PlayerFull';
+import PlayerMini from './PlayerMini';
+import Player from './Player.tsx';
+
+# Player Demo
+
+<Playground className="bg-red-lightest -m-10 p-10">
+  {() => {
+    const morphs = useMorphKeys(['container', 'title', 'subtitle', 'image']);
+
+    const [toggle, setToggle] = useState(false);
+
+    return (
+    <div>
+        {!toggle ? (
+          <PlayerMini morphs={morphs} onClick={() => setToggle(!toggle)} />
+        ) : (
+          <PlayerFull morphs={morphs} onClick={() => setToggle(!toggle)} />
+        )}
+    </div>
+
+)}}
+</Playground>
+
+<small className="absolute pin-b pin-l m-5 text-red-lighter">
+  Design by: @shuvro_008
+  https://tailwindcomponents.com/component/tailwind-css-audio-player
+</small>

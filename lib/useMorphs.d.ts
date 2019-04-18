@@ -1,6 +1,7 @@
 /// <reference types="react" />
 import { MorphOptions } from './types';
-declare const useMultiMorph: (list: any[], options?: MorphOptions) => ({
+declare type OptionsMapperFn = (items: any[]) => MorphOptions;
+declare const useMorphs: (items: number | any[], options?: MorphOptions | OptionsMapperFn) => ({
     ({ style, ...extra }?: {
         style?: {};
     }): {
@@ -1499,4 +1500,4 @@ declare const useMultiMorph: (list: any[], options?: MorphOptions) => ({
 } | {
     resize: () => void;
 })[])[];
-export default useMultiMorph;
+export default useMorphs;

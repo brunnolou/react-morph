@@ -6,7 +6,7 @@ menu: Getting Started
 
 import { Playground } from 'docz';
 import { useState } from 'react';
-import { useFade } from '../../../src/index';
+import { useFade } from 'react-morph/';
 import { butterfly, larva } from '../../images';
 
 # Fade in Fade out
@@ -61,10 +61,19 @@ Then spread the props to the elements you want to fade.
 
 </Playground>
 
+> **⚠️ Warning: **
+>
+> Differentl than `useMorph`:
+>
+> - Don't spread the same fade into multiple elements.
+> - Create one for the initial state and another for the final state
+
 ## Disable initial fade
 
 Usually when you create a complex morph with some fades, we just want to fade in/out when toggle.
 In order to disable the initial fade in on page load you can toggle the option `isInitial`.
+
+Normally you will set the `isInitial` option on the initial state and disable it to the final state.
 
 ```js
 useFade({ isInitial: toggle });
@@ -77,6 +86,3 @@ This is expecially useful to use with `useMorph`.
 
 To update this behaviour you can set the option `delaysRatio`.
 The default value is `0.1`. To disable the delay set `delaysRatio` to `1`.
-
-> **Warning: **
-> Don't use the same fade twice!

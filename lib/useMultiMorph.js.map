@@ -1,1 +1,0 @@
-{"version":3,"file":"useMultiMorph.js","sourceRoot":"","sources":["../src/useMultiMorph.ts"],"names":[],"mappings":";;AAAA,uCAAkC;AAGlC,IAAM,aAAa,GAAG,UAAC,IAAW,EAAE,OAA0B;IAA1B,wBAAA,EAAA,YAA0B;IAC5D,IAAM,MAAM,GAAG,IAAI,CAAC,GAAG,CAAC,cAAM,OAAA,kBAAQ,CAAC,OAAO,CAAC,EAAjB,CAAiB,CAAC,CAAC;IAEjD,OAAO,MAAM,CAAC;AAChB,CAAC,CAAC;AAEF,kBAAe,aAAa,CAAC"}

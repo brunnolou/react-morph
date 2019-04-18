@@ -3,11 +3,10 @@ import { css } from 'docz-plugin-css';
 export default {
   title: 'React Morph - Docs',
   typescript: true,
-	files: 'docs/**/*.{md,markdown,mdx}',
-	public: 'docs/public',
-  plugins: [
-    css({ preprocessor: 'postcss' }),
-  ],
+  files: './**/*.{md,markdown,mdx}',
+  public: './public',
+  menu: [{ name: 'Getting Started', menu: ['Intro'] }],
+  plugins: [css({ preprocessor: 'postcss' })],
   themeConfig: {
     styles: {
       container: {

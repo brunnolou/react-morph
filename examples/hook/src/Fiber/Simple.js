@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import useMorph from "../useMorph";
+import React, { useState } from 'react';
+import { useMorph } from 'react-morph';
 
 const springs = [
   {
     damping: 26,
     mass: 1,
-    stiffness: 170
+    stiffness: 170,
   },
   {
     damping: 2,
     mass: 1,
-    stiffness: 170
-  }
+    stiffness: 170,
+  },
 ];
 
 function Simple() {
@@ -39,7 +39,7 @@ function Simple() {
 					}
 				`}
       </style>
-      {!keepFrom ? "Remove" : "Keep"} previous
+      {!keepFrom ? 'Remove' : 'Keep'} previous
       {!keepFrom ? (
         <button onClick={() => setToggle(!isToggle)}>Toggle From</button>
       ) : (
