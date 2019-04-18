@@ -1,6 +1,6 @@
 {
   "name": "react-morph",
-  "version": "0.4.0-alpha.3",
+  "version": "0.4.0-alpha.4",
   "description": "Ui transitions made simple",
   "main": "lib",
   "types": "lib/index.d.ts",
