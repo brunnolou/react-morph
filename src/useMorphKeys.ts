@@ -13,7 +13,7 @@ const useMorphKeys = (
     return { ...acc, [key]: useMorph({ zIndex: i, ...options }) };
   }, {});
 
-  return Object.assign(list, keysObj);
+  return keysObj;
 };
 
 export default useMorphKeys;
