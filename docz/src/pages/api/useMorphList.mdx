@@ -1,0 +1,30 @@
+---
+name: useMorphList
+route: /api/useMorphList
+menu: Api
+---
+
+# `useMorphList`
+
+```js
+import { useMorphList } from 'react-morph';
+```
+
+### `useMorphList(any[] | number, options: MorphOptions)`
+
+Return an **array** with multiple morphs with the same length of the given array or the length of the given number.
+Also, each morph will receive an incremental `zIndex` option prop.
+
+```js
+const myItems = [{ name: 'Foo' }, { name: 'bar' }];
+const morphs = useMorphList(myItems);
+
+<ul>
+  {myItems.map((user, index) => (
+    <li>
+      {isExpanded && <strong {...morphs[index]}>{user.name}</strong>}
+      {isExpanded && <h1 {...morphs[index]}>{user.name}</h1>}
+    </li>
+  ))}
+</ul>;
+```

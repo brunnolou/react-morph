@@ -1,0 +1,42 @@
+---
+name: useMorphKeys
+route: /api/useMorphKeys
+menu: Api
+---
+
+# `useMorphKeys`
+
+```js
+import { useMorphKeys } from 'react-morph';
+```
+
+### `useMorphKeys(string[], options: MorphOptions)`
+
+Return an **object** with multiple morphs with the given keys.
+Also, each morph will receive an incremental `zIndex` option prop.
+
+```js
+const Index = () => {
+  const morphs = useMorphKeys(['key1', 'key2']);
+  // morphs = { key1: …, key2: … }
+
+  return (
+    <main>
+      {toggle && <Item morphs={morphs} />}
+      {!toggle && <Details morphs={morphs} />}
+    </main>
+  );
+};
+
+const Item = ({ morphs }) => (
+  <div {...morphs.key1}>
+    <p {...morphs.key2}>Foo</p>
+  </div>
+);
+
+const Details = ({ morphs }) => (
+  <div {...morphs.key1}>
+    <h1 {...morphs.key2}>Foo</h1>
+  </div>
+);
+```

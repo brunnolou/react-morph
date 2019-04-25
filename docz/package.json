@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-		"postinstall": "./postinstall.sh",
-		"watch-lib": "onchange '../lib/**/*.js' -- npm run postinstall",
+    "postinstall": "./postinstall.sh",
+    "watch-lib": "onchange '../lib/**/*.js' -- npm run postinstall",
     "dev": "docz dev && npm run watch-lib",
     "build": "docz build"
   },
@@ -13,10 +13,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/react-router-dom": "^4.3.2",
     "@types/styled-components": "^4.1.14",
     "docz-plugin-css": "^0.11.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-router-dom": "^5.0.0",
     "styled-components": "^4.2.0"
   },
   "devDependencies": {

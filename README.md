@@ -3,11 +3,12 @@
 #### Morphing UI transitions made simple
 
 [![npm version](https://badge.fury.io/js/react-morph.svg?v0)](https://www.npmjs.com/package/react-morph)
-![size](http://img.badgesize.io/brunnolou/react-morph/master/lib/all.min.js?compression=gzip&label=gzip+size&v)
 
-![Preview Gif](https://github.com/brunnolou/react-morph/blob/master/examples/react-morph.gif)
+![Preview Gif](https://github.com/brunnolou/react-morph/blob/master/examples/react-morph-simple.gif)
 
-## Usage 🐛
+Magically animates one element into another just by tagging the first and last state.
+
+## Getting Started 🐛
 
 ```sh
 npm install react-morph
@@ -15,74 +16,69 @@ npm install react-morph
 yarn add react-morph
 ```
 
-## Simple Example
-
-1. Create two states as you normally would (HTML + CSS).
-2. Wrap both in one `<ReactMorph>`
-3. Label the elements you wanna morph with `from("a-key")` and `to("a-key")`
-4. Perform the magic with `go(0)` or `go(1)`
+Import the `useMorph` hook.
 
 ```js
-import React from "react";
-import ReactMorph from "react-morph";
+const morph = useMorph(options);
+```
+
+Then spread the props to the elements you want to morph.
+
+```jsx
+<img {...morph} src="larva.png" width="50">
 ```
 
 ```jsx
-<ReactMorph>
-  {({ from, to, fadeIn, go }) => (
-    <div>
-      <a onClick={() => go(1)}>
-        <strong {...from("title")}>ReactMorph 🐛</strong>
-        <br />
-        <p {...from("description")}>Morphing transitions was never so easy!</p>
-      </a>
-
-      <div>
-        <h1 {...to("title")}>ReactMorph 🦋</h1>
-        <br />
-        <h2 {...to("description")}>Morphing transitions was never so easy!</h2>
-
-        <a onClick={() => go(0)} {...fadeIn()}>
-          Back
-        </a>
-      </div>
-    </div>
-  )}
-</ReactMorph>
+<img {...morph} src="butterfly.png" width="80">
 ```
+
+> Make sure you have just **ONE element rendered at same time**.
+
+## Simple Example 🦋
+
+1. Create two states as you normally would (HTML + CSS).
+2. Call `useMorph` hook.
+3. Spread the elements you want to morph with `{...morph}`
+4. Add and remove the element from the DOM
+
+```js
+import React from 'react';
+import { useMorph } from 'react-morph';
+```
+
+```jsx
+() => {
+  // Handle toggle state as you normally would.
+  const [toggle, setToggle] = useState(true);
+  const morph = useMorph();
+
+  return (
+    <div>
+      <button onClick={() => setToggle(!toggle)}>Let's morph!</button>
+      <br />
+
+      {toggle ? (
+        <img {...morph} src={larva} width="30" />
+      ) : (
+        <img {...morph} src={butterfly} width="80" />
+      )}
+    </div>
+  );
+};
+```
+
+## [Documentation](https://brunnolou.github.io/react-morph)
+
+Please check the [documentation](https://brunnolou.github.io/react-morph).
 
 ## Features 🌟
 
-* Simplicity
-* No hardcoded absolute positions
-* All GPU accelerated props
-* No layout or paint browser rendering
+- Simplicity
+- No hardcoded absolute positions
+- All GPU accelerated props
+- No layout or paint browser rendering
 
-## Keep in mind
+## Live Demos
 
-Caveats:
-
-* You need to remove extra whitespace, to match the real element's width, the solution is `display: inline-block` or a wrapping element to the content.
-* Margins are always tricky because they create extra white space. You can either wrap the content in another element and animate it or be sure to match both the margins in both states.
-* Sometimes it's necessary to create a placeholder element for the transition to avoid child distortion.
-* List items could be miscalculated; a simple solution is: `list-style: none;`.
-* Sometimes you need extra layers instead of nested children.
-* Avoid animating both the parent and children to avoid unpredicted results.
-
-## [Live Demos](https://brunnolou.github.io/react-morph/?down=0)
-
-### Sandbox
-
-* [Simple text](https://codesandbox.io/s/j2rjln010w)
-
-* [Morphing from card to details](https://codesandbox.io/s/96x66mr6w)
-
-[![Edit j2rjln010w](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/j2rjln010w)
-
-## TODO
-
-> **Warning** wip
-
-* [ ] Add a `styled-components` example
-* [ ] Recalculate positions on window resize
-* [ ] ? Optional portal for the second state ?
+- [Hello world](https://codesandbox.io/s/yqyymqn8z1)
+- [Apple App Store](https://codesandbox.io/s/7ywk4o0xmj)

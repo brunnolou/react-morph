@@ -5,10 +5,10 @@ const PlayerFull = ({ morphs = {}, ...props }) => {
     <div {...morphs.container} {...props}>
       <div className="bg-white shadow-lg rounded-lg">
         <div className="flex">
-          <div className="w-1/2">
+          <div className="w-2/5 lg:w-1/2">
             <img
               className="w-full h-full rounded object-cover"
-              src={'/public/sky-wide.jpg'}
+              src={"/public/sky-wide.jpg"}
               alt="Album Pic"
               {...morphs.image}
             />
@@ -17,7 +17,7 @@ const PlayerFull = ({ morphs = {}, ...props }) => {
             <div className="flex justify-between">
               <div>
                 <h3
-                  className="text-3xl text-grey-darkest leading-none font-medium"
+                  className="text-3xl text-grey-darkest leading-none font-medium whitespace-no-wrap"
                   {...morphs.title}
                 >
                   A Sky Full of Stars

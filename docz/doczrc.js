@@ -5,7 +5,12 @@ export default {
   typescript: true,
   files: './**/*.{md,markdown,mdx}',
   public: './public',
-  menu: [{ name: 'Getting Started', menu: ['Intro'] }],
+  menu: [
+    { name: 'Getting Started' },
+    { name: 'Styling' },
+    { name: 'Api' },
+  ],
+  codeSandbox: false,
   plugins: [css({ preprocessor: 'postcss' })],
   themeConfig: {
     styles: {

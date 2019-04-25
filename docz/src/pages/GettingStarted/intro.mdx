@@ -1,7 +1,6 @@
 ---
-name: Intro
+name: Getting Started
 route: /
-menu: Getting Started
 ---
 
 import { Playground } from 'docz';
@@ -13,7 +12,9 @@ import { butterfly, larva } from '../../images';
 
 #### Morphing UI transitions made simple
 
-## Getting Started
+Magically animates one element into another just by tagging the first and last state.
+
+## Getting Started 🐛
 
 Import the `useMorph` hook.
 
@@ -30,16 +31,16 @@ const morph = useMorph(options);
 Then spread the props to the elements you want to morph.
 
 ```jsx
-<img {...morph} src="larva.png" width="50">
+<img {...morph} src="larva.png" width="30">
 ```
 
 ```jsx
 <img {...morph} src="butterfly.png" width="80">
 ```
 
-You should handle the state as you normally would.
+You should handle the state as you normally would for mounting and unmounting the elements.
 
-> Make sure you have just **ONE element redered at same time**.
+> Make sure you have just **ONE element rendered at same time**.
 
 <Playground>
   {() => {
@@ -67,13 +68,22 @@ You should handle the state as you normally would.
 
 React morph doesn't handle the state for you. There is no play or stop method.
 
-Also, it won't hide or show the elements for you. It's up to you how you wanna handle it.
+Also, it won't hide or show the elements for you. It's up to you how you want to handle it.
 
 The animation will be triggered as soon as the new element with the same `{...morph}` enters the DOM.
 
 That's why you cannot have the two state elements at the same time.
 
-## Styling
+The elements can use `useState`
 
-You can style your components however you like.
-You can use inline styles, class names or a CSS-in-JS solution like Styled Components.
+```js
+{
+  toggle ? (
+    <img {...morph} src={larva} width="30" />
+  ) : (
+    <img {...morph} src={butterfly} width="80" />
+  );
+}
+```
+
+But also you can use `react-router`

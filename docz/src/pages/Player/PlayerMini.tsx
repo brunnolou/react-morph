@@ -8,9 +8,9 @@ const PlayerFull = ({ morphs, ...props }) => {
       {...props}
     >
       <div className="flex">
-        <div>
+        <div className="w-1/5">
           <img
-            className="rounded  md:block"
+            className="w-full h-full rounded object-cover"
             src="/public/sky-square.jpg"
             alt="Album Pic"
             width="80"
@@ -26,7 +26,10 @@ const PlayerFull = ({ morphs, ...props }) => {
               >
                 A Sky Full of Stars
               </h3>
-              <p className="text-sm m-0 text-grey float-left" {...morphs.subtitle}>
+              <p
+                className="text-sm m-0 text-grey float-left"
+                {...morphs.subtitle}
+              >
                 Ghost Stories
               </p>
             </div>

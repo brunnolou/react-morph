@@ -1,0 +1,119 @@
+---
+name: Styling
+route: /styling
+---
+
+import { Playground } from 'docz';
+import { H1Block, H1Inline } from './styling';
+
+# Styling
+
+You can style your components with whatever you like.
+You can use **inline styles**, **CSS** class names or a **CSS-in-JS** solution like Styled Components.
+
+### Caveats
+
+Since React Morph rely on `getBoundingClientRect` there's a few things you should know.
+
+## Whitespace
+
+You need to remove extra whitespace, to match the real element's width.
+For example, `block` elements like an `h1` don't have intuitive size:
+
+<Playground>
+  {() => {
+    return (
+      <h1
+        style={{
+          border: '2px dotted',
+        }}
+      >
+        This is an h1
+      </h1>
+    );
+  }}
+</Playground>
+
+To solve this we can style it with `display: inline-block`:
+
+<Playground>
+  {() => {
+    return (
+      <h1
+        style={{
+          border: '2px dotted',
+          display: 'inline-block',
+        }}
+      >
+        This is an h1
+      </h1>
+    );
+  }}
+</Playground>
+
+Another way is by wrapping with flexbox `display: flex`:
+
+<Playground>
+  {() => {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'start',
+        }}
+      >
+        <h1
+          style={{
+            border: '2px dotted',
+          }}
+        >
+          This is an h1
+        </h1>
+        <h1
+          style={{
+            border: '2px dotted',
+          }}
+        >
+          This is another one
+        </h1>
+      </div>
+    );
+  }}
+</Playground>
+
+## Margins
+
+Margins also create extra white space.
+You can wrap the element and add the margin to it.
+
+```js
+// Don't
+<div className="margin-bottom" {...morph}>
+  …
+</div>
+```
+
+```js
+// Do
+<div className="margin-bottom">
+  <div {...morph}>…</div>
+</div>
+```
+
+Or you can make sure to **match the margins in both states**.
+
+```js
+// Do
+{
+  toggle ? (
+    <div className="margin-bottom first" {...morph} />
+  ) : (
+    <div className="margin-bottom last" {...morph} />
+  );
+}
+```
+
+### Other
+
+List items could be miscalculated; a simple solution is: `list-style: none;`.
