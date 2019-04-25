@@ -1,5 +1,5 @@
 {
-  "name": "docz",
+  "name": "react-morph-docz",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,11 +7,10 @@
     "postinstall": "./postinstall.sh",
     "watch-lib": "onchange '../lib/**/*.js' -- npm run postinstall",
     "dev": "docz dev && npm run watch-lib",
+    "deploy": "gh-pages -d .docz/dist",
     "build": "docz build"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@types/react-router-dom": "^4.3.2",
     "@types/styled-components": "^4.1.14",
@@ -27,5 +26,17 @@
     "docz": "^1.0.0",
     "docz-theme-default": "^1.0.0",
     "onchange": "^5.2.0"
+  },
+  "homepage": "https://brunnolou.github.io/react-morph",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brunnolou/react-morph.git"
+  },
+  "contributors": [
+    "Bruno Lourenço"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brunnolou/react-morph/issues"
   }
 }

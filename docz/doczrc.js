@@ -1,7 +1,8 @@
 import { css } from 'docz-plugin-css';
 
 export default {
-  title: 'React Morph - Docs',
+	title: 'React Morph - Docs',
+	base: '/react-morph/',
   typescript: true,
   files: './**/*.{md,markdown,mdx}',
   public: './public',
