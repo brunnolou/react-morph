@@ -4,7 +4,7 @@
 
 [![npm version](https://badge.fury.io/js/react-morph.svg?v0)](https://www.npmjs.com/package/react-morph)
 
-![Preview Gif](https://github.com/brunnolou/react-morph/blob/master/examples/react-morph-simple.gif)
+<img src="https://github.com/brunnolou/react-morph/blob/master/examples/react-morph-simple.gif" width="300">
 
 Magically animates one element into another just by tagging the first and last state.
 
