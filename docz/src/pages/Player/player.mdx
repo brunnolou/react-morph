@@ -5,7 +5,7 @@ menu: Demos
 ---
 
 import { useState } from 'react';
-import { useMorph, useMorphKeys } from 'react-morph';
+import { useMorph, useMorphs } from 'react-morph';
 import { Playground } from 'docz';
 import '../../utilities.css';
 import '../../../public/tailwind.min.css';
@@ -17,7 +17,7 @@ import Player from './Player.tsx';
 
 <Playground className="bg-red-lightest -m-10 p-10">
   {() => {
-    const morphs = useMorphKeys(['container', 'title', 'subtitle', 'image']);
+    const morphs = useMorphs(['container', 'title', 'subtitle', 'image']);
 
     const [toggle, setToggle] = useState(false);
 

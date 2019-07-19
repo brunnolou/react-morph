@@ -1,10 +1,10 @@
-import { useRef, useCallback, useEffect, useLayoutEffect } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 import { Spring } from 'wobble';
 import { linear } from '@popmotion/easing';
 
 import morphTransition from './morphTransition';
 import { getRect } from './util';
-import { MorphOptions } from './types';
+import { MorphOptions, Morph } from './types';
 
 const globalAny: any = global;
 
@@ -31,7 +31,7 @@ const defaultsOptions = {
   withMethods: false,
 };
 
-export default function useMorph(opts: MorphOptions = defaultsOptions) {
+export default function useMorph(opts: MorphOptions = defaultsOptions): Morph {
   const options = { ...defaultsOptions, ...opts };
   const {
     getMargins,
@@ -170,7 +170,7 @@ export default function useMorph(opts: MorphOptions = defaultsOptions) {
     style,
   };
 
-  const propsFn = ({ style = {}, ...extra } = {}) => ({
+  const propsFn: Morph = ({ style = {}, ...extra } = {}) => ({
     ...props,
     style: { ...props.style, ...style },
   });
@@ -179,7 +179,7 @@ export default function useMorph(opts: MorphOptions = defaultsOptions) {
   propsFn.style = style;
 
   if (options.withMethods) {
-    return [propsFn, { resize }];
+    propsFn.resize = resize;
   }
 
   return propsFn;

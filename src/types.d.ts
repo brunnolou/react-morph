@@ -30,3 +30,14 @@ export interface MorphOptions {
 export interface FadeOptions extends MorphOptions {
   isInitial?: boolean;
 }
+
+// Morph
+export interface MorphObj {
+  ref: (to: HTMLElement) => void;
+  style: React.CSSProperties;
+  resize?: () => void;
+}
+
+export type MorphFn = (obj: { style?: React.CSSProperties }) => MorphObj;
+
+export type Morph = MorphObj & MorphFn;
